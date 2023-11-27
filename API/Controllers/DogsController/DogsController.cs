@@ -35,7 +35,12 @@ namespace API.Controllers.DogsController
         [Route("getDogById/{dogId}")]
         public async Task<IActionResult> GetDogById(Guid dogId)
         {
-            return Ok(await _mediator.Send(new GetDogByIdQuery(dogId)));
+            var result = await _mediator.Send(new GetDogByIdQuery(dogId));
+            if (result == null)
+            {
+                return NotFound("Den hunden finns inte med i listan");
+            }
+            return Ok(result);
         }
 
         // Create a new dog 
@@ -51,7 +56,12 @@ namespace API.Controllers.DogsController
         [Route("updateDog/{updatedDogId}")]
         public async Task<IActionResult> UpdateDog([FromBody] DogDto updatedDog, Guid updatedDogId)
         {
-            return Ok(await _mediator.Send(new UpdateDogByIdCommand(updatedDog, updatedDogId)));
+            var updateResult = await _mediator.Send(new UpdateDogByIdCommand(updatedDog, updatedDogId));
+            if (updateResult == null)
+            {
+                return NotFound("Den hunden finns inte med i listan");
+            }
+            return Ok(updateResult);
         }
 
         [HttpDelete]

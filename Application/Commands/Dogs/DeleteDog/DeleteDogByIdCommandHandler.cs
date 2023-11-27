@@ -1,12 +1,10 @@
-﻿using Domain.Models;
+﻿using Application.Commands.Dogs.DeleteDog;
+using Domain.Models;
 using Infrastructure.Database;
 using MediatR;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Linq;
 
-namespace Application.Commands.Dogs.DeleteDog
+
+namespace Application.Commands.Dogs
 {
     public class DeleteDogByIdCommandHandler : IRequestHandler<DeleteDogByIdCommand, Dog>
     {
@@ -19,20 +17,13 @@ namespace Application.Commands.Dogs.DeleteDog
 
         public Task<Dog> Handle(DeleteDogByIdCommand request, CancellationToken cancellationToken)
         {
-            // Find the dog to delete by ID
-            Dog dogToDelete = _mockDatabase.Dogs.FirstOrDefault(d => d.Id == request.DogId)!;
+            Dog dogToDelete = _mockDatabase.Dogs.FirstOrDefault(dogs => dogs.Id == request.Id);
 
-            // Check if the dog exists
-            if (dogToDelete == null)
+            if (dogToDelete != null)
             {
-                // Dog not found, return false or handle differently
-                return Task.FromResult<Dog>(null);
+                _mockDatabase.Dogs.Remove(dogToDelete);
             }
 
-            // Remove the dog from the database
-            _mockDatabase.Dogs.Remove(dogToDelete);
-
-            // Return true to indicate successful deletion
             return Task.FromResult(dogToDelete);
         }
     }

@@ -1,6 +1,6 @@
-﻿// Cat
-using System;
-namespace Domain.Models.Animal
+﻿using Domain.Models.Animal;
+
+namespace Domain.Models
 {
 	public class Cat : AnimalModel
 	{
