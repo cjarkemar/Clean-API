@@ -1,4 +1,5 @@
 ﻿using Application.Queries.Dogs.GetById;
+using Domain.Models;
 using Infrastructure.Database;
 
 namespace Test.DogTests.QueryTest
@@ -22,6 +23,8 @@ namespace Test.DogTests.QueryTest
         {
             // Arrange
             var dogId = new Guid("12345678-1234-5678-1234-567812345678");
+            var dog = new Dog { Id = dogId, /* other properties */ };
+            _mockDatabase.Dogs.Add(dog);
 
             var query = new GetDogByIdQuery(dogId);
 
