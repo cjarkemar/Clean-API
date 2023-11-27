@@ -2,11 +2,9 @@
 using System;
 namespace Domain.Models.Animal
 {
-	public class Cat
+	public class Cat : AnimalModel
 	{
-		public Cat()
-		{
-		}
-	}
+        public bool LikesToPlay { get; set; }
+    }
 }
 

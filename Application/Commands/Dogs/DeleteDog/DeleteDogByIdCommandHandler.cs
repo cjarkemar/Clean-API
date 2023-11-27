@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Application.Commands.Dogs.DeleteDog
 {
-    internal sealed class DeleteDogByIdCommandHandler : IRequestHandler<DeleteDogByIdCommand, Dog>
+    public class DeleteDogByIdCommandHandler : IRequestHandler<DeleteDogByIdCommand, Dog>
     {
         private readonly MockDatabase _mockDatabase;
 
