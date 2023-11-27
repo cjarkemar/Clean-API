@@ -1,4 +1,5 @@
 ﻿using Application.Commands.Dogs;
+using Application.Commands.Dogs.DeleteDog;
 using Application.Commands.Dogs.UpdateDog;
 using Application.Dtos;
 using Application.Queries.Dogs.GetAll;
@@ -53,7 +54,19 @@ namespace API.Controllers.DogsController
             return Ok(await _mediator.Send(new UpdateDogByIdCommand(updatedDog, updatedDogId)));
         }
 
-        // IMPLEMENT DELETE !!!
+        [HttpDelete]
+        [Route("deleteDog/{deleteDogId}")]
+        public async Task<IActionResult> DeleteDog(Guid deleteDogId)
+        {
+            var result = await _mediator.Send(new DeleteDogByIdCommand(deleteDogId));
+            if (result == null)
+            {
+                return NotFound("Den hunden finns inte med i listan"); 
+            }
+            return Ok(result);
+        }
+
+
 
     }
 }

@@ -16,4 +16,24 @@
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Commands\Dogs\DeleteDog\" />
+    <None Remove="Queries\Cats\" />
+    <None Remove="Queries\Cats\GetAll\" />
+    <None Remove="Queries\Cats\GetById\" />
+    <None Remove="Commands\Cats\" />
+    <None Remove="Commands\Cats\AddCat\" />
+    <None Remove="Commands\Cats\DeleteCat\" />
+    <None Remove="Commands\Cats\Updatecat\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Commands\Dogs\DeleteDog\" />
+    <Folder Include="Queries\Cats\" />
+    <Folder Include="Queries\Cats\GetAll\" />
+    <Folder Include="Queries\Cats\GetById\" />
+    <Folder Include="Commands\Cats\" />
+    <Folder Include="Commands\Cats\AddCat\" />
+    <Folder Include="Commands\Cats\DeleteCat\" />
+    <Folder Include="Commands\Cats\Updatecat\" />
+  </ItemGroup>
 </Project>
