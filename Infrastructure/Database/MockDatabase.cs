@@ -50,20 +50,6 @@ namespace Infrastructure.Database
         };
 
         
-
-        //// Adding Birds collection
-        //private static List<Bird> allBirds = new()
-        //{
-        //    new Bird { Id = Guid.NewGuid(), Name = "Tweety", CanFly = true},
-        //    new Bird { Id = Guid.NewGuid(), Name = "Polly", CanFly = false}
-            
-        //};
-
-        //public List<Bird> Birds
-        //{
-        //    get { return allBirds; }
-        //    set { allBirds = value; }
-        //}
     }
 }
 

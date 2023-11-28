@@ -38,7 +38,7 @@ namespace Test.DogTests.CommandTest
             Assert.IsNotNull(result, "The returned dog should not be null.");
             Assert.AreEqual(newDogName, result.Name, "The name of the dog should match the requested name.");
             // Additional check to ensure the dog is added to the mock database
-            var dogInDatabase = _mockDatabase.Dogs.Find(d => d.Id == result.Id);
+            var dogInDatabase = _mockDatabase.Dogs.Find(dog => dog.Id == result.Id);
             Assert.IsNotNull(dogInDatabase, "The dog should be added to the mock database.");
             Assert.AreEqual(newDogName, dogInDatabase.Name, "The dog in the database should have the correct name.");
         }

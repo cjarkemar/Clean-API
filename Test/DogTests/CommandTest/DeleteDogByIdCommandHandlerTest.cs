@@ -44,7 +44,7 @@ namespace Test.DogTests.CommandTest
         {
             // Arrange
             var nonExistentDogId = Guid.NewGuid();
-            var command = new DeleteDogByIdCommand(nonExistentDogId); // Adjusted to use constructor
+            var command = new DeleteDogByIdCommand(nonExistentDogId); 
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
