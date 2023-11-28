@@ -27,12 +27,12 @@ namespace Test.DogTests.CommandTest
             {
                 // Arrange
                 var dogId = Guid.NewGuid();
-                var originalDog = new Dog { Id = dogId, Name = "OldName", /* other properties */ };
+                var originalDog = new Dog { Id = dogId, Name = "OldName"};
                 _mockDatabase.Dogs.Add(originalDog);
 
                 var updatedName = "NewName";
-                var dogDto = new DogDto { Name = updatedName }; // Assuming DogDto has a Name property
-                var updateCommand = new UpdateDogByIdCommand(dogDto, dogId); // Adjusted to use constructor
+                var dogDto = new DogDto { Name = updatedName }; 
+                var updateCommand = new UpdateDogByIdCommand(dogDto, dogId); 
 
                 // Act
                 var result = await _handler.Handle(updateCommand, CancellationToken.None);
@@ -49,8 +49,8 @@ namespace Test.DogTests.CommandTest
             {
                 // Arrange
                 var nonExistentDogId = Guid.NewGuid();
-                var dogDto = new DogDto { Name = "NewName" }; // Assuming DogDto has a Name property
-                var updateCommand = new UpdateDogByIdCommand(dogDto, nonExistentDogId); // Adjusted to use constructor
+                var dogDto = new DogDto { Name = "NewName" }; 
+                var updateCommand = new UpdateDogByIdCommand(dogDto, nonExistentDogId); 
 
                 // Act
                 var result = await _handler.Handle(updateCommand, CancellationToken.None);
