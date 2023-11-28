@@ -25,10 +25,12 @@
     <None Remove="Controllers\DogsController\" />
     <None Remove="Controllers\CatsController\" />
     <None Remove="Controllers\AuthenticationController\" />
+    <None Remove="Controllers\BirdsController\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\DogsController\" />
     <Folder Include="Controllers\CatsController\" />
     <Folder Include="Controllers\AuthenticationController\" />
+    <Folder Include="Controllers\BirdsController\" />
   </ItemGroup>
 </Project>

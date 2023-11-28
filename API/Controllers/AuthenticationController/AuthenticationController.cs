@@ -66,20 +66,20 @@ namespace API.Controllers
         // Helper method to create a JWT token.
         private string CreateToken(User user)
         {
-            // Creates claims for the JWT. Here, just the username is used as a claim.
+            // just the username is used as a claim.
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Username)
-                // You can add more claims as needed
+                
             };
 
-            // Fetches the secret key from configuration and creates a symmetric security key.
+            // Fetches the secret key from configuration and creates security key.
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecretKey"]));
 
-            // Creates signing credentials using the security key and HMAC-SHA512 signature.
+            // Creates signing credentials using the security key.
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
-            // Creates the JWT token with the specified issuer, audience, claims, expiry, and credentials.
+            // Creates the JWT token with the specified issuer, audience, claims, expirationdate, and credentials
             var token = new JwtSecurityToken(
                 issuer: _configuration["JwtSettings:Issuer"],
                 audience: _configuration["JwtSettings:Audience"],

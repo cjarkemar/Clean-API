@@ -18,6 +18,13 @@ namespace Infrastructure.Database
             set { allCats = value; }
         }
 
+        public List<Bird> Birds
+        {
+            get { return allBirds; }
+            set { allBirds = value; }
+        }
+
+
         private static List<Dog> allDogs = new()
         {
             new Dog { Id = Guid.NewGuid(), Name = "Björn"},
@@ -34,6 +41,13 @@ namespace Infrastructure.Database
             
         };
 
+        private static List<Bird> allBirds = new()
+        {
+            new Bird { Id = Guid.NewGuid(), Name = "Max", CanFly = true},
+            new Bird { Id = Guid.NewGuid(), Name = "Pepe", CanFly = false},
+            new Bird { Id = Guid.NewGuid(), Name = "Tobias"},
+            new Bird { Id = new Guid("87654321-1234-5678-1234-567812345678"), Name = "TestBirdForUnitTests"}
+        };
 
         
 
