@@ -16,7 +16,7 @@ namespace Application.Commands.Cats
 
         public Task<Cat> Handle(DeleteCatByIdCommand request, CancellationToken cancellationToken)
         {
-            Cat catToDelete = _mockDatabase.Cats.FirstOrDefault(c => c.Id == request.Id);
+            Cat catToDelete = _mockDatabase.Cats.FirstOrDefault(cat => cat.Id == request.Id);
 
             if (catToDelete != null)
             {
