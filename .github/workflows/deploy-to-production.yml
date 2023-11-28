@@ -3,14 +3,14 @@ name: Deploy to Production
 on:
   pull_request:
     branches:
-      - production
+      - Production
     types:
       - closed
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: production
+    environment: PRODUCTION
     if: github.event.pull_request.merged == true
     steps:
       - name: Checkout code
