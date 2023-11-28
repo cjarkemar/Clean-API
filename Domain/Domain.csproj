@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Models\UserModel\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\UserModel\" />
+  </ItemGroup>
 </Project>
