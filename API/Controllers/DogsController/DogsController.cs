@@ -5,6 +5,7 @@ using Application.Dtos;
 using Application.Queries.Dogs.GetAll;
 using Application.Queries.Dogs.GetById;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -13,6 +14,7 @@ namespace API.Controllers.DogsController
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class DogsController : ControllerBase
     {
         internal readonly IMediator _mediator;
