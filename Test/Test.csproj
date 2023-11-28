@@ -18,12 +18,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DogTests\CommandTest\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="BIrdTests\" />
+    <None Remove="BIrdTests\CommandTest\" />
+    <None Remove="BIrdTests\QueryTest\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="BIrdTests\" />
+    <Folder Include="BIrdTests\CommandTest\" />
+    <Folder Include="BIrdTests\QueryTest\" />
+  </ItemGroup>
 </Project>

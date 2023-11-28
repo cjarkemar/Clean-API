@@ -16,4 +16,30 @@
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Commands\Dogs\DeleteDog\" />
+    <None Remove="Queries\Cats\" />
+    <None Remove="Queries\Cats\GetAll\" />
+    <None Remove="Queries\Cats\GetById\" />
+    <None Remove="Commands\Birds\" />
+    <None Remove="Commands\Birds\DeleteBird\" />
+    <None Remove="Commands\Birds\AddBird\" />
+    <None Remove="Commands\Birds\UpdateBird\" />
+    <None Remove="Queries\Birds\" />
+    <None Remove="Queries\Birds\GetAll\" />
+    <None Remove="Queries\Birds\GetById\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Commands\Dogs\DeleteDog\" />
+    <Folder Include="Queries\Cats\" />
+    <Folder Include="Queries\Cats\GetAll\" />
+    <Folder Include="Queries\Cats\GetById\" />
+    <Folder Include="Commands\Birds\" />
+    <Folder Include="Commands\Birds\DeleteBird\" />
+    <Folder Include="Commands\Birds\AddBird\" />
+    <Folder Include="Commands\Birds\UpdateBird\" />
+    <Folder Include="Queries\Birds\" />
+    <Folder Include="Queries\Birds\GetAll\" />
+    <Folder Include="Queries\Birds\GetById\" />
+  </ItemGroup>
 </Project>

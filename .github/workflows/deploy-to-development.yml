@@ -3,14 +3,14 @@ name: Deploy to Development
 on:
   pull_request:
     branches:
-      - development
+      - Development
     types:
       - closed
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: development
+    environment: DEVELOPMENT
     if: github.event.pull_request.merged == true
     steps:
       - name: Checkout code

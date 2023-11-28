@@ -6,9 +6,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.12" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.14" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,4 +21,16 @@
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Controllers\DogsController\" />
+    <None Remove="Controllers\CatsController\" />
+    <None Remove="Controllers\AuthenticationController\" />
+    <None Remove="Controllers\BirdsController\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controllers\DogsController\" />
+    <Folder Include="Controllers\CatsController\" />
+    <Folder Include="Controllers\AuthenticationController\" />
+    <Folder Include="Controllers\BirdsController\" />
+  </ItemGroup>
 </Project>

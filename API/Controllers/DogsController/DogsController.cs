@@ -1,9 +1,11 @@
 ﻿using Application.Commands.Dogs;
+using Application.Commands.Dogs.DeleteDog;
 using Application.Commands.Dogs.UpdateDog;
 using Application.Dtos;
 using Application.Queries.Dogs.GetAll;
 using Application.Queries.Dogs.GetById;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -12,6 +14,7 @@ namespace API.Controllers.DogsController
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class DogsController : ControllerBase
     {
         internal readonly IMediator _mediator;
@@ -34,7 +37,12 @@ namespace API.Controllers.DogsController
         [Route("getDogById/{dogId}")]
         public async Task<IActionResult> GetDogById(Guid dogId)
         {
-            return Ok(await _mediator.Send(new GetDogByIdQuery(dogId)));
+            var result = await _mediator.Send(new GetDogByIdQuery(dogId));
+            if (result == null)
+            {
+                return NotFound("Den hunden finns inte med i listan");
+            }
+            return Ok(result);
         }
 
         // Create a new dog 
@@ -50,10 +58,27 @@ namespace API.Controllers.DogsController
         [Route("updateDog/{updatedDogId}")]
         public async Task<IActionResult> UpdateDog([FromBody] DogDto updatedDog, Guid updatedDogId)
         {
-            return Ok(await _mediator.Send(new UpdateDogByIdCommand(updatedDog, updatedDogId)));
+            var updateResult = await _mediator.Send(new UpdateDogByIdCommand(updatedDog, updatedDogId));
+            if (updateResult == null)
+            {
+                return NotFound("Den hunden finns inte med i listan");
+            }
+            return Ok(updateResult);
         }
 
-        // IMPLEMENT DELETE !!!
+        [HttpDelete]
+        [Route("deleteDog/{deleteDogId}")]
+        public async Task<IActionResult> DeleteDog(Guid deleteDogId)
+        {
+            var result = await _mediator.Send(new DeleteDogByIdCommand(deleteDogId));
+            if (result == null)
+            {
+                return NotFound("Den hunden finns inte med i listan"); 
+            }
+            return Ok(result);
+        }
+
+
 
     }
 }
