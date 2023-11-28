@@ -2,7 +2,7 @@ name: Pull Request Checks
 
 on:
   pull_request:
-    branches: [development, production]
+    branches: [Development, Production]
 
 jobs:
   deploy:
