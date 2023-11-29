@@ -1,4 +1,4 @@
-﻿// Bird
+﻿
 using System;
 namespace Domain.Models.Animal
 {
