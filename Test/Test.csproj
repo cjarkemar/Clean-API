@@ -23,13 +23,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="BIrdTests\" />
-    <None Remove="BIrdTests\CommandTest\" />
-    <None Remove="BIrdTests\QueryTest\" />
+    <None Remove="CatTests\" />
+    <None Remove="BirdTests\" />
+    <None Remove="BirdTests\CommandTest\" />
+    <None Remove="BirdTests\QueryTest\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="BIrdTests\" />
-    <Folder Include="BIrdTests\CommandTest\" />
-    <Folder Include="BIrdTests\QueryTest\" />
+    <Folder Include="CatTests\" />
+    <Folder Include="BirdTests\" />
+    <Folder Include="BirdTests\CommandTest\" />
+    <Folder Include="BirdTests\QueryTest\" />
   </ItemGroup>
 </Project>
