@@ -15,7 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(SwaggerConfig =>
 {
     // Creating a Swagger document.
-    SwaggerConfig.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+    SwaggerConfig.SwaggerDoc("v1", new OpenApiInfo { Title = "API Animal", Version = "v1" });
 
     // Adding JWT Authentication definition to Swagger.
     // This allows Swagger UI to send the JWT token in the Authorization header.
@@ -23,7 +23,7 @@ builder.Services.AddSwaggerGen(SwaggerConfig =>
     {
         Name = "Authorization",
         Type = SecuritySchemeType.Http,
-        Scheme = "Bearer",
+        Scheme = "Bearer    ",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
         Description = "JWT Authorization header using the Bearer scheme."

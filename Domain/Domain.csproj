@@ -12,4 +12,8 @@
   <ItemGroup>
     <Folder Include="Models\UserModel\" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.14" />
+  </ItemGroup>
 </Project>
