@@ -7,17 +7,17 @@ namespace Application.Queries.Birds
 {
     public class GetAllBirdsQueryHandler : IRequestHandler<GetAllBirdsQuery, List<Bird>>
     {
-        private readonly MockDatabase _mockDatabase;
+        private readonly RealDatabase _realDatabase;
 
-        public GetAllBirdsQueryHandler(MockDatabase mockDatabase)
+        public GetAllBirdsQueryHandler(RealDatabase realDatabase)
         {
-            _mockDatabase = mockDatabase;
+            _realDatabase = realDatabase;
         }
 
         public Task<List<Bird>> Handle(GetAllBirdsQuery request, CancellationToken cancellationToken)
         {
-            List<Bird> allBirdsFromMockDatabase = _mockDatabase.Birds;
-            return Task.FromResult(allBirdsFromMockDatabase);
+            List<Bird> allBirdsFromRealDatabase = _realDatabase.Birds.ToList();
+            return Task.FromResult(allBirdsFromRealDatabase);
         }
     }
 }

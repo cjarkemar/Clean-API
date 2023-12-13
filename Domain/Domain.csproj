@@ -7,13 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Models\UserModel\" />
+    <None Remove="Models\User\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\UserModel\" />
+    <Folder Include="Models\User\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.14" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.14" />
   </ItemGroup>
 </Project>

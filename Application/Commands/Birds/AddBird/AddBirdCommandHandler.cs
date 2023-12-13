@@ -6,11 +6,11 @@ namespace Application.Commands.Birds
 {
     public class AddBirdCommandHandler : IRequestHandler<AddBirdCommand, Bird>
     {
-        private readonly MockDatabase _mockDatabase;
+        private readonly RealDatabase _realDatabase;
 
-        public AddBirdCommandHandler(MockDatabase mockDatabase)
+        public AddBirdCommandHandler(RealDatabase realDatabase)
         {
-            _mockDatabase = mockDatabase;
+            _realDatabase = realDatabase;
         }
 
         public Task<Bird> Handle(AddBirdCommand request, CancellationToken cancellationToken)
@@ -22,7 +22,7 @@ namespace Application.Commands.Birds
                 CanFly = request.NewBird.CanFly
             };
 
-            _mockDatabase.Birds.Add(birdToCreate);
+            _realDatabase.Birds.Add(birdToCreate);
             return Task.FromResult(birdToCreate);
         }
     }

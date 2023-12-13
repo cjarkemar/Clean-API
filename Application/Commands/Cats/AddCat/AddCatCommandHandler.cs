@@ -6,11 +6,11 @@ namespace Application.Commands.Cats
 {
     public class AddCatCommandHandler : IRequestHandler<AddCatCommand, Cat>
     {
-        private readonly MockDatabase _mockDatabase;
+        private readonly RealDatabase _realDatabase;
 
-        public AddCatCommandHandler(MockDatabase mockDatabase)
+        public AddCatCommandHandler(RealDatabase realDatabase)
         {
-            _mockDatabase = mockDatabase;
+            _realDatabase = realDatabase;
         }
 
         public Task<Cat> Handle(AddCatCommand request, CancellationToken cancellationToken)
@@ -22,7 +22,8 @@ namespace Application.Commands.Cats
                 LikesToPlay = request.NewCat.LikesToPlay
             };
 
-            _mockDatabase.Cats.Add(catToCreate);
+            _realDatabase.Cats.Add(catToCreate);
+            _realDatabase.SaveChangesAsync(cancellationToken);
             return Task.FromResult(catToCreate);
         }
     }

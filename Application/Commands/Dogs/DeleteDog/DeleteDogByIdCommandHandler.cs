@@ -8,22 +8,22 @@ namespace Application.Commands.Dogs
 {
     public class DeleteDogByIdCommandHandler : IRequestHandler<DeleteDogByIdCommand, Dog>
     {
-        private readonly MockDatabase _mockDatabase;
+        private readonly RealDatabase _realDatabase;
 
-        public DeleteDogByIdCommandHandler(MockDatabase mockDatabase)
+        public DeleteDogByIdCommandHandler(RealDatabase realDatabase)
         {
-            _mockDatabase = mockDatabase;
+            _realDatabase = realDatabase;
         }
 
         public Task<Dog> Handle(DeleteDogByIdCommand request, CancellationToken cancellationToken)
         {
-            Dog dogToDelete = _mockDatabase.Dogs.FirstOrDefault(dogs => dogs.Id == request.Id);
+            Dog dogToDelete = _realDatabase.Dogs.FirstOrDefault(dogs => dogs.Id == request.Id)!;
 
             if (dogToDelete != null)
             {
-                _mockDatabase.Dogs.Remove(dogToDelete);
+                _realDatabase.Dogs.Remove(dogToDelete);
             }
-
+            _realDatabase.SaveChangesAsync(cancellationToken);
             return Task.FromResult(dogToDelete);
         }
     }

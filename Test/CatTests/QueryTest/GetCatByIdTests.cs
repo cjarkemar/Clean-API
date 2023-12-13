@@ -1,10 +1,14 @@
-﻿using Application.Queries.Cats.GetById;
-using Domain.Models;
-using Infrastructure.Database;
+﻿using Moq;
 using NUnit.Framework;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Domain.Models;
+using Infrastructure.Database;
+using Application.Queries.Cats.GetById;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Test.CatTests.QueryTest
 {
@@ -12,14 +16,31 @@ namespace Test.CatTests.QueryTest
     public class GetCatByIdTests
     {
         private GetCatByIdQueryHandler _handler;
-        private MockDatabase _mockDatabase;
+        private Mock<RealDatabase> _mockDatabase;
+        private List<Cat> _catsData;
 
         [SetUp]
         public void SetUp()
         {
-            // Initialize the handler and mock database before each test
-            _mockDatabase = new MockDatabase();
-            _handler = new GetCatByIdQueryHandler(_mockDatabase);
+            _catsData = new List<Cat>
+            {
+                new Cat { Id = new Guid("12345678-1234-5678-1234-567812345678") },
+                
+            };
+
+            var catsDbSetMock = new Mock<DbSet<Cat>>();
+            catsDbSetMock.As<IQueryable<Cat>>().Setup(m => m.Provider).Returns(_catsData.AsQueryable().Provider);
+            catsDbSetMock.As<IQueryable<Cat>>().Setup(m => m.Expression).Returns(_catsData.AsQueryable().Expression);
+            catsDbSetMock.As<IQueryable<Cat>>().Setup(m => m.ElementType).Returns(_catsData.AsQueryable().ElementType);
+            catsDbSetMock.As<IQueryable<Cat>>().Setup(m => m.GetEnumerator()).Returns(_catsData.AsQueryable().GetEnumerator());
+
+            // Setup mock DbSet to find and return the relevant Cat
+            catsDbSetMock.Setup(m => m.Find(It.IsAny<object[]>())).Returns<object[]>(ids => _catsData.FirstOrDefault(d => d.Id == (Guid)ids[0]));
+
+            _mockDatabase = new Mock<RealDatabase>();
+            _mockDatabase.Setup(db => db.Cats).Returns(catsDbSetMock.Object);
+
+            _handler = new GetCatByIdQueryHandler(_mockDatabase.Object);
         }
 
         [Test]
@@ -27,9 +48,6 @@ namespace Test.CatTests.QueryTest
         {
             // Arrange
             var catId = new Guid("12345678-1234-5678-1234-567812345678");
-            var cat = new Cat { Id = catId,};
-            _mockDatabase.Cats.Add(cat);
-
             var query = new GetCatByIdQuery(catId);
 
             // Act
@@ -45,7 +63,6 @@ namespace Test.CatTests.QueryTest
         {
             // Arrange
             var invalidCatId = Guid.NewGuid();
-
             var query = new GetCatByIdQuery(invalidCatId);
 
             // Act
