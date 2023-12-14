@@ -1,11 +1,15 @@
-﻿using Application.Queries.Birds.GetById;
-using Domain.Models;
-using Domain.Models.Animal;
-using Infrastructure.Database;
+﻿using Moq;
 using NUnit.Framework;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Domain.Models;
+using Infrastructure.Database;
+using Application.Queries.Birds.GetById;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using Domain.Models.Animal;
 
 namespace Test.BirdTests.QueryTest
 {
@@ -13,14 +17,28 @@ namespace Test.BirdTests.QueryTest
     public class GetBirdByIdTests
     {
         private GetBirdByIdQueryHandler _handler;
-        private MockDatabase _mockDatabase;
+        private Mock<RealDatabase> _mockDatabase;
+        private List<Bird> _birdsData;
 
         [SetUp]
         public void SetUp()
         {
-            // Initialize the handler and mock database before each test
-            _mockDatabase = new MockDatabase();
-            _handler = new GetBirdByIdQueryHandler(_mockDatabase);
+            _birdsData = new List<Bird>
+            {
+                new Bird { Id = new Guid("12345678-1234-5678-1234-567812345678") },
+                
+            };
+
+            var birdsDbSetMock = new Mock<DbSet<Bird>>();
+            birdsDbSetMock.As<IQueryable<Bird>>().Setup(m => m.Provider).Returns(_birdsData.AsQueryable().Provider);
+            birdsDbSetMock.As<IQueryable<Bird>>().Setup(m => m.Expression).Returns(_birdsData.AsQueryable().Expression);
+            birdsDbSetMock.As<IQueryable<Bird>>().Setup(m => m.ElementType).Returns(_birdsData.AsQueryable().ElementType);
+            birdsDbSetMock.As<IQueryable<Bird>>().Setup(m => m.GetEnumerator()).Returns(_birdsData.AsQueryable().GetEnumerator());
+
+            _mockDatabase = new Mock<RealDatabase>();
+            _mockDatabase.Setup(db => db.Birds).Returns(birdsDbSetMock.Object);
+
+            _handler = new GetBirdByIdQueryHandler(_mockDatabase.Object);
         }
 
         [Test]
@@ -28,9 +46,6 @@ namespace Test.BirdTests.QueryTest
         {
             // Arrange
             var birdId = new Guid("12345678-1234-5678-1234-567812345678");
-            var bird = new Bird { Id = birdId, };
-            _mockDatabase.Birds.Add(bird);
-
             var query = new GetBirdByIdQuery(birdId);
 
             // Act
@@ -46,7 +61,6 @@ namespace Test.BirdTests.QueryTest
         {
             // Arrange
             var invalidBirdId = Guid.NewGuid();
-
             var query = new GetBirdByIdQuery(invalidBirdId);
 
             // Act

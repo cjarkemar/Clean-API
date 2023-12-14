@@ -7,16 +7,16 @@ namespace Application.Queries.Birds.GetById
 {
     public class GetBirdByIdQueryHandler : IRequestHandler<GetBirdByIdQuery, Bird>
     {
-        private readonly MockDatabase _mockDatabase;
+        private readonly RealDatabase _realDatabase;
 
-        public GetBirdByIdQueryHandler(MockDatabase mockDatabase)
+        public GetBirdByIdQueryHandler(RealDatabase realDatabase)
         {
-            _mockDatabase = mockDatabase;
+            _realDatabase = realDatabase;
         }
 
         public Task<Bird> Handle(GetBirdByIdQuery request, CancellationToken cancellationToken)
         {
-            Bird wantedBird = _mockDatabase.Birds.FirstOrDefault(bird => bird.Id == request.Id);
+            Bird wantedBird = _realDatabase.Birds.FirstOrDefault(bird => bird.Id == request.Id);
             return Task.FromResult(wantedBird);
         }
     }

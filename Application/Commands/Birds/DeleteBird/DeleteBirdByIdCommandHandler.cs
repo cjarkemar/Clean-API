@@ -7,21 +7,22 @@ namespace Application.Commands.Birds
 {
     public class DeleteBirdByIdCommandHandler : IRequestHandler<DeleteBirdByIdCommand, Bird>
     {
-        private readonly MockDatabase _mockDatabase;
+        private readonly RealDatabase _realDatabase;
 
-        public DeleteBirdByIdCommandHandler(MockDatabase mockDatabase)
+        public DeleteBirdByIdCommandHandler(RealDatabase realDatabase)
         {
-            _mockDatabase = mockDatabase;
+            _realDatabase = realDatabase;
         }
 
         public Task<Bird> Handle(DeleteBirdByIdCommand request, CancellationToken cancellationToken)
         {
-            Bird birdToDelete = _mockDatabase.Birds.FirstOrDefault(bird => bird.Id == request.Id);
+            Bird birdToDelete = _realDatabase.Birds.FirstOrDefault(bird => bird.Id == request.Id)!;
 
             if (birdToDelete != null)
             {
-                _mockDatabase.Birds.Remove(birdToDelete);
+                _realDatabase.Birds.Remove(birdToDelete);
             }
+            _realDatabase.SaveChangesAsync(cancellationToken);
 
             return Task.FromResult(birdToDelete);
         }

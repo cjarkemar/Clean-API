@@ -2,6 +2,7 @@
 using System;
 using Domain.Models;
 using Domain.Models.Animal;
+using Domain.Models.User;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Database
@@ -16,6 +17,8 @@ namespace Infrastructure.Database
         public virtual DbSet<Cat> Cats { get; set; }
 
         public virtual DbSet<Bird> Birds { get; set; }
+
+        public virtual DbSet<User> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

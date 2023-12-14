@@ -7,21 +7,23 @@ namespace Application.Commands.Cats
 {
     public class DeleteCatByIdCommandHandler : IRequestHandler<DeleteCatByIdCommand, Cat>
     {
-        private readonly MockDatabase _mockDatabase;
+        private readonly RealDatabase _realDatabase;
 
-        public DeleteCatByIdCommandHandler(MockDatabase mockDatabase)
+        public DeleteCatByIdCommandHandler(RealDatabase realDatabase)
         {
-            _mockDatabase = mockDatabase;
+            _realDatabase = realDatabase;
         }
 
         public Task<Cat> Handle(DeleteCatByIdCommand request, CancellationToken cancellationToken)
         {
-            Cat catToDelete = _mockDatabase.Cats.FirstOrDefault(cat => cat.Id == request.Id);
+            Cat catToDelete = _realDatabase.Cats.FirstOrDefault(cat => cat.Id == request.Id)!;
 
             if (catToDelete != null)
             {
-                _mockDatabase.Cats.Remove(catToDelete);
+                _realDatabase.Cats.Remove(catToDelete);
             }
+
+            _realDatabase.SaveChangesAsync(cancellationToken);
 
             return Task.FromResult(catToDelete);
         }

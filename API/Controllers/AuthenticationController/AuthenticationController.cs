@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Domain.Models.UserModel;
+using Domain.Models.User;
 using Application.Dtos;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;

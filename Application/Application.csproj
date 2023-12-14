@@ -10,6 +10,7 @@
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.8.0" />
     <PackageReference Include="MediatR" Version="12.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.14" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.14" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +30,9 @@
     <None Remove="Queries\Birds\" />
     <None Remove="Queries\Birds\GetAll\" />
     <None Remove="Queries\Birds\GetById\" />
+    <None Remove="Commands\Users\" />
+    <None Remove="Queries\Users\" />
+    <None Remove="Queries\Users\GetAll\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Commands\Dogs\DeleteDog\" />
@@ -42,5 +46,8 @@
     <Folder Include="Queries\Birds\" />
     <Folder Include="Queries\Birds\GetAll\" />
     <Folder Include="Queries\Birds\GetById\" />
+    <Folder Include="Commands\Users\" />
+    <Folder Include="Queries\Users\" />
+    <Folder Include="Queries\Users\GetAll\" />
   </ItemGroup>
 </Project>

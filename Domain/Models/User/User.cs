@@ -1,8 +1,8 @@
 ﻿// User
 using System;
-namespace Domain.Models.UserModel
+namespace Domain.Models.User
 {
-	public class User
+	public class User : UserModel
 	{
 		public string Username { get; set; } = string.Empty;
 

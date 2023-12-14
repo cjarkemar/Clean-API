@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(RealDatabase))]
-    partial class RealDatabaseModelSnapshot : ModelSnapshot
+    [Migration("20231211122038_MigrationwithSeededCat")]
+    partial class MigrationwithSeededCat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,20 +38,6 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Birds");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("7d6be299-7a34-404d-9e6a-2afde73d9030"),
-                            CanFly = true,
-                            Name = "TwitterGod"
-                        },
-                        new
-                        {
-                            Id = new Guid("a47beca2-5791-4e0a-b0cc-2d99415a25b9"),
-                            CanFly = false,
-                            Name = "TobiasNugget"
-                        });
                 });
 
             modelBuilder.Entity("Domain.Models.Cat", b =>
@@ -71,19 +60,19 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("ca361584-a242-415f-8bcb-fb1707861d27"),
+                            Id = new Guid("8d4cf10c-346d-410e-afee-cde457a175c9"),
                             LikesToPlay = true,
                             Name = "Garfield"
                         },
                         new
                         {
-                            Id = new Guid("d61a575b-33ad-45e0-a846-792c65c8197c"),
+                            Id = new Guid("f4aaa6b9-83da-45d7-8ba5-bdcddee1f59c"),
                             LikesToPlay = false,
                             Name = "HorseCatDude"
                         },
                         new
                         {
-                            Id = new Guid("12345678-1234-5678-1234-567812345675"),
+                            Id = new Guid("12345678-1234-5678-1234-567812345674"),
                             LikesToPlay = true,
                             Name = "AmandatheUglyCat"
                         });
@@ -106,27 +95,27 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("aec200f2-7f32-4025-9826-140375921f99"),
+                            Id = new Guid("fab54d3b-95c9-4f6b-9473-4c49f66d8e2b"),
                             Name = "OldG"
                         },
                         new
                         {
-                            Id = new Guid("1ee8441f-5dcd-4636-94d9-fcbad12549f2"),
+                            Id = new Guid("86efbf16-6bc9-4a80-aae9-16e8af80fa59"),
                             Name = "NewG"
                         },
                         new
                         {
-                            Id = new Guid("04d8d7c5-32df-4ca1-8ea3-700f89290638"),
+                            Id = new Guid("44d7e23f-0ff0-4e9d-a55b-1aa94118bd51"),
                             Name = "Björn"
                         },
                         new
                         {
-                            Id = new Guid("8782dc97-de4b-4dea-96c4-bd9dcd0ef2f4"),
+                            Id = new Guid("0e03e9fa-722a-4aef-a180-f0d5e2c7dd73"),
                             Name = "Patrik"
                         },
                         new
                         {
-                            Id = new Guid("a2d38508-8c93-4fbf-b00f-060f66455176"),
+                            Id = new Guid("55224cac-b05a-4c29-af05-fc3fe0324b46"),
                             Name = "Alfred"
                         },
                         new
@@ -148,38 +137,6 @@ namespace Infrastructure.Migrations
                         {
                             Id = new Guid("12345678-1234-5678-1234-567812345674"),
                             Name = "TestDogForUnitTests4"
-                        });
-                });
-
-            modelBuilder.Entity("Domain.Models.User.User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("f85335f3-af15-45f2-a860-16fd71692ee4"),
-                            Name = "Testanvändare",
-                            PasswordHash = "",
-                            Username = "testanvändarnamn"
                         });
                 });
 #pragma warning restore 612, 618

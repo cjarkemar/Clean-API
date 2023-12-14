@@ -8,17 +8,17 @@ namespace Application.Queries.Cats
 {
     public class GetAllCatsQueryHandler : IRequestHandler<GetAllCatsQuery, List<Cat>>
     {
-        private readonly MockDatabase _mockDatabase;
+        private readonly RealDatabase _realDatabase;
 
-        public GetAllCatsQueryHandler(MockDatabase mockDatabase)
+        public GetAllCatsQueryHandler(RealDatabase realDatabase)
         {
-            _mockDatabase = mockDatabase;
+            _realDatabase = realDatabase;
         }
 
         public Task<List<Cat>> Handle(GetAllCatsQuery request, CancellationToken cancellationToken)
         {
-            List<Cat> allCatsFromMockDatabase = _mockDatabase.Cats;
-            return Task.FromResult(allCatsFromMockDatabase);
+            List<Cat> allCatsFromRealDatabase = _realDatabase.Cats.ToList();
+            return Task.FromResult(allCatsFromRealDatabase);
         }
     }
 }
