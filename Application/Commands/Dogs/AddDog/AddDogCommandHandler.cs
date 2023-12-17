@@ -13,6 +13,7 @@ namespace Application.Commands.Dogs
         //private readonly RealDatabase _realDatabase;
         private readonly IDogRepository _dogRepository;
         private readonly DogValidator _dogValidator;
+       
 
         public AddDogCommandHandler(IDogRepository dogRepository, DogValidator validator)
         {

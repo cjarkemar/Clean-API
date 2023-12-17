@@ -13,6 +13,7 @@ namespace Infrastructure.Database.RealDatabase
 
         public DbSet<Bird> Birds { get; set; }
         public DbSet<Dog> Dogs { get; set; }
+        public DbSet<User> Users { get; set; }
 
        
         private readonly IConfiguration _configuration;

@@ -1,86 +1,63 @@
 ﻿// UsersController
 using System;
 using Application.Commands.Users;
-//using Application.Commands.Users.DeleteUser;
-//using Application.Commands.Users.UpdateUser;
-//using Application.Dtos;
-using Application.Queries.Users.GetAll;
-//  using Application.Queries.Users.GetById;
+using Application.Dtos;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Application.Validators.User;
+using Application.Queries.Users;
 
-namespace API.Controllers.UserController
+namespace API.Controllers.UsersController
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
-    public class UserController : ControllerBase
+    public class UsersController : ControllerBase
     {
         internal readonly IMediator _mediator;
-        public UserController(IMediator mediator)
+        internal readonly UserValidator _userValidator;
+
+        public UsersController(IMediator mediator, UserValidator userValidator)
         {
             _mediator = mediator;
+            _userValidator = userValidator;
         }
 
-        // Get all users from database
-        [HttpGet]
-        [Route("getAllUsers")]
-        public async Task<IActionResult> GetAllUsers()
+        // GET: api/<UsersController>
+        [HttpPost]
+        [Route("Login")]
+        public async Task<IActionResult> GetToken(string username, string password)
         {
-            return Ok(await _mediator.Send(new GetAllUsersQuery()));
-            //return Ok("GET ALL USERS");
+            var token = await _mediator.Send(new GetTokenForUserQuery(username, password));
+
+            if (token == null)
+            {
+                return NotFound("User not found");
+            }
+
+            return Ok(token);
+
         }
+        [HttpPost]
+        [Route("Register")]
+        public async Task<IActionResult> RegisterUser([FromBody] UserDto newUser)
+        {
+            var userValidator = _userValidator.Validate(newUser);
 
-        //Get a user by Id
-        //[HttpGet]
-        //[Route("getUserById/{userId}")]
-        //public async Task<IActionResult> GetUserById(Guid userId)
-        //{
-        //    var result = await _mediator.Send(new GetUserByIdQuery(userId));
-        //    if (result == null)
-        //    {
-        //        return NotFound("Den användaren finns inte med i listan");
-        //    }
-        //    return Ok(result);
-        //}
+            if (!userValidator.IsValid)
+            {
+                return BadRequest(userValidator.Errors.ConvertAll(errors => errors.ErrorMessage));
+            }
 
-        //// Create a new dog 
-        //[HttpPost]
-        //[Route("addNewUser")]
-        //public async Task<IActionResult> AddUser([FromBody] UserDto newUser)
-        //{
-        //    return Ok(await _mediator.Send(new AddUserCommand(newUser)));
-        //}
+            try
+            {
+                return Ok(await _mediator.Send(new AddUserCommand(newUser)));
+            }
+            catch (Exception ex)
+            {
 
-        //// Update a specific user
-        //[HttpPut]
-        //[Route("updateUser/{updatedUserId}")]
-        //public async Task<IActionResult> UpdateUser([FromBody] UserDto updatedUser, Guid updatedUserId)
-        //{
-        //    var updateResult = await _mediator.Send(new UpdateUserByIdCommand(updatedUser, updatedUserId));
-        //    if (updateResult == null)
-        //    {
-        //        return NotFound("Den hunden finns inte med i listan");
-        //    }
-        //    return Ok(updateResult);
-        //}
-
-        //[HttpDelete]
-        //[Route("deleteUser/{deleteUserId}")]
-        //public async Task<IActionResult> DeleteUser(Guid deleteUserId)
-        //{
-        //    var result = await _mediator.Send(new DeleteUserByIdCommand(deleteUserId));
-        //    if (result == null)
-        //    {
-        //        return NotFound("Den användaren finns inte med i listan");
-        //    }
-        //    return Ok(result);
-        //}
-
-
-
+                throw new Exception(ex.Message);
+            }
+        }
     }
+
 }
-
-

@@ -7,8 +7,8 @@ using Application.Queries.Dogs.GetById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Application.Validators.Dogs; ;
-usi
+using Application.Validators.Dogs;
+using Application.Validators;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -22,7 +22,7 @@ namespace API.Controllers.DogsController
         internal readonly IMediator _mediator;
         internal readonly DogValidator _dogValidator;
         internal readonly GuidValidator _guidValidator;
-        public DogsController(IMediator mediator)
+        public DogsController(IMediator mediator, DogValidator dogValidator, GuidValidator guidValidator)
         {
             _mediator = mediator;
             _dogValidator = dogValidator;
@@ -35,7 +35,7 @@ namespace API.Controllers.DogsController
 
         public async Task<IActionResult> GetAllDogs() // metod för att hämta alla hundar i Db 
         {
-            var guidValidator = _guidValidator.Validate(dogId); 
+           
             try
             {
                 return Ok(await _mediator.Send(new GetAllDogsQuery()));

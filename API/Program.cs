@@ -47,10 +47,13 @@ builder.Services.AddApplication().AddInfrastructure();
 
 
 var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
-builder.Services.AddDbContext<RealDatabase>(option =>
-{
-    option.UseMySql(connectionString, b => b.MigrationsAssembly("API"));
-});
+builder.Services.AddDbContext<RealDatabase>(options =>
+    options.UseMySql(
+        connectionString,
+        new MySqlServerVersion(new Version(8, 2, 0)), //Vet ej varför man måste skriva ut db version när man använder Mysql? Oklart..
+        b => b.MigrationsAssembly("API")
+    )
+);
 
 var app = builder.Build();
 
