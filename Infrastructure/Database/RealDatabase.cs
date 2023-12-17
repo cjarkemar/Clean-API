@@ -4,27 +4,30 @@ using Domain.Models;
 using Domain.Models.Animal;
 using Domain.Models.User;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
-namespace Infrastructure.Database
+namespace Infrastructure.Database.RealDatabase
 {
     public class RealDatabase : DbContext
     {
-        public RealDatabase() { }
-        public RealDatabase(DbContextOptions<RealDatabase> options) : base(options) { }
 
-        public virtual DbSet<Dog> Dogs { get; set; }
+        public DbSet<Bird> Birds { get; set; }
+        public DbSet<Dog> Dogs { get; set; }
 
-        public virtual DbSet<Cat> Cats { get; set; }
+       
+        private readonly IConfiguration _configuration;
 
-        public virtual DbSet<Bird> Birds { get; set; }
-
-        public virtual DbSet<User> Users { get; set; }
+        public RealDatabase(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySql("server=localhost;port=3306;user=root;password=arkemar321;database=RealDB",
-                        new MySqlServerVersion(new Version(8, 2, 0)));
+            var connectionString = _configuration.GetConnectionString("DatabaseConnection");
+            var serverVersion = new MySqlServerVersion(new Version(8, 2, 0)); //När man använder Mysql behöver man skriva ut serverversion här? dont know why
 
+            optionsBuilder.UseMySql(connectionString, serverVersion);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -34,9 +37,11 @@ namespace Infrastructure.Database
             // Call the SeedData method from the external class
             DatabaseSeedHelper.SeedData(modelBuilder);
         }
-    }
 
+    }
 }
+
+
 
 
 

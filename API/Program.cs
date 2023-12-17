@@ -1,93 +1,71 @@
 using System.Text;
+using API.Swagger;
 using Application;
 using Infrastructure;
+using Infrastructure.Database.RealDatabase;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Registering controllers and API endpoints.
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
+builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]!);
+// Add services to the container.
 
-// Configuring Swagger for API documentation.
-builder.Services.AddSwaggerGen(SwaggerConfig =>
+builder.Services.AddAuthentication(options =>
 {
-    // Creating a Swagger document.
-    SwaggerConfig.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 
-    // Adding JWT Authentication definition to Swagger.
-    // This allows Swagger UI to send the JWT token in the Authorization header.
-    SwaggerConfig.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "JWT Authorization header using the Bearer scheme."
-    });
-
-    // Telling SwaggerUI that the API uses Bearer(JWT) authentication so i don't need to add the Bearer infront of pasted token
-    SwaggerConfig.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new string[] {}
-        }
-    });
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key)
+    };
 });
 
+builder.Services.AddAuthorization();
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
 builder.Services.AddApplication().AddInfrastructure();
 
-// Configuring JWT Bearer authentication.
-builder.Services.AddAuthentication(options =>
+
+var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
+builder.Services.AddDbContext<RealDatabase>(option =>
 {
-    // Setting the schemes to JWT Bearer.
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    // Setting the parameters for validating incoming JWT tokens.
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        
-        ValidateIssuerSigningKey = true,
-        ValidateIssuer = true,
-        ValidateAudience = true,       
-        ValidateLifetime = true,
-        ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-        ValidAudience = builder.Configuration["JwtSettings:Audience"],
-        // Setting signing key from the configuration.
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]))
-    };
+    option.UseMySql(connectionString, b => b.MigrationsAssembly("API"));
 });
+
 var app = builder.Build();
 
-
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 
-
 app.MapControllers();
+
 app.Run();

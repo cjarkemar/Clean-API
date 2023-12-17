@@ -44,11 +44,7 @@ namespace Infrastructure.Database
 
                 );
 
-            modelBuilder.Entity<User>().HasData(
-
-                new User { Id = Guid.NewGuid(), Name = "Testanvändare", Username = "testanvändarnamn"}
-
-                );
+         
 
 
 
