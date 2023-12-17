@@ -1,6 +1,6 @@
 ﻿using Application.Queries.Users.GetAll;
 using Domain.Models.User;
-using Infrastructure.Database;
+using Infrastructure.Database.RealDatabase;
 using MediatR;
 
 namespace Application.Queries.GetAll.Users 

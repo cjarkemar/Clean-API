@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Infrastructure.Database;
 using Infrastructure.Database.RealDatabase;
 using Infrastructure.Authentication;
+using Infrastructure.RepositoryPatternFiles.DogsPattern;
 
 namespace Infrastructure
 {
@@ -15,8 +16,9 @@ namespace Infrastructure
             services.AddSingleton<MockDatabase>();
 
             services.AddSingleton<GeneratorJwtToken>();
+            services.AddScoped<IDogRepository, DogRepository>();
 
-           
+
             return services;
         }
     }

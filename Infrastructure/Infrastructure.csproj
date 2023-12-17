@@ -26,9 +26,15 @@
   <ItemGroup>
     <None Remove="Migrations\" />
     <None Remove="Authentication\" />
+    <None Remove="RepositoryPatternFiles\" />
+    <None Remove="RepositoryPatternFiles\DogsPattern\" />
+    <None Remove="RepositoryPatternFiles\CatsPattern\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Migrations\" />
     <Folder Include="Authentication\" />
+    <Folder Include="RepositoryPatternFiles\" />
+    <Folder Include="RepositoryPatternFiles\DogsPattern\" />
+    <Folder Include="RepositoryPatternFiles\CatsPattern\" />
   </ItemGroup>
 </Project>

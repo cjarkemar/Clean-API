@@ -10,8 +10,6 @@ namespace Application.Queries.Dogs.GetById
         public GetDogByIdQuery(Guid dogId)
         {
             Id = dogId;
-        }
-
-        
+        }    
     }
 }
