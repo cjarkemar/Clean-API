@@ -1,7 +1,7 @@
 ﻿// AddUserCommandHandler
 using Domain.Models;
 using Domain.Models.User;
-using Infrastructure.Database;
+using Infrastructure.Database.RealDatabase;
 using MediatR;
 
 namespace Application.Commands.Users

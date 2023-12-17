@@ -16,6 +16,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.14" />
     <PackageReference Include="Moq" Version="4.20.70" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,8 +25,10 @@
 
   <ItemGroup>
     <None Remove="Migrations\" />
+    <None Remove="Authentication\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="Authentication\" />
   </ItemGroup>
 </Project>

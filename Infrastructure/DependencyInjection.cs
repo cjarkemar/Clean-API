@@ -1,7 +1,10 @@
-﻿using Infrastructure.Database;
+﻿
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Infrastructure.Database;
+using Infrastructure.Database.RealDatabase;
+using Infrastructure.Authentication;
 
 namespace Infrastructure
 {
@@ -11,11 +14,9 @@ namespace Infrastructure
         {
             services.AddSingleton<MockDatabase>();
 
-            services.AddDbContext<RealDatabase>(options =>
-            {
-                options.UseMySql("server=localhost;port=3306;user=root;password=arkemar321;database=RealDB",
-                         new MySqlServerVersion(new Version(8, 2, 0)));
-            });
+            services.AddSingleton<GeneratorJwtToken>();
+
+           
             return services;
         }
     }

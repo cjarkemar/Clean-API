@@ -1,6 +1,6 @@
 ﻿using Domain.Models;
 using Application.Queries.Cats.GetAll;
-using Infrastructure.Database;
+using Infrastructure.Database.RealDatabase;
 using MediatR;
 
 
