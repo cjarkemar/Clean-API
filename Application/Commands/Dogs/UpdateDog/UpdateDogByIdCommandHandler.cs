@@ -1,32 +1,38 @@
 ﻿using Domain.Models;
 using Infrastructure.Database.RealDatabase;
 using MediatR;
+using Infrastructure.RepositoryPatternFiles.DogsPattern;
+using Application.Validators.Dogs;
+
 
 namespace Application.Commands.Dogs.UpdateDog
 {
     public class UpdateDogByIdCommandHandler : IRequestHandler<UpdateDogByIdCommand, Dog>
     {
-        private readonly RealDatabase _realDatabase;
+        private readonly IDogRepository _dogRepository;
+        private readonly DogValidator _dogValidator;
 
-        public UpdateDogByIdCommandHandler(RealDatabase realDatabase)
+        public UpdateDogByIdCommandHandler(IDogRepository dogRepository, DogValidator validator)
         {
-            _realDatabase = realDatabase;
+            _dogRepository = dogRepository;
+            _dogValidator = validator;
         }
-        public Task<Dog> Handle(UpdateDogByIdCommand request, CancellationToken cancellationToken)
+        public async Task<Dog> Handle(UpdateDogByIdCommand request, CancellationToken cancellationToken)
         {
-            Dog dogToUpdate = _realDatabase.Dogs.FirstOrDefault(dog => dog.Id == request.Id)!;
+
+            Dog dogToUpdate = await _dogRepository.GetDogById(request.Id);
 
             if (dogToUpdate == null)
             {
-                return Task.FromResult<Dog>(null);
+                return null!;
             }
 
-            dogToUpdate.Name = request.UpdatedDog.Name;
 
-            _realDatabase.SaveChangesAsync(cancellationToken);
+            dogToUpdate.Name = request.DogToUpdate.Name;
 
-            return Task.FromResult(dogToUpdate);
+            var updatedDog = await _dogRepository.UpdateDog(dogToUpdate);
+
+            return updatedDog;
         }
-
     }
 }

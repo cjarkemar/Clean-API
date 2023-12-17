@@ -33,6 +33,8 @@
     <None Remove="Commands\Users\" />
     <None Remove="Queries\Users\" />
     <None Remove="Queries\Users\GetAll\" />
+    <None Remove="Validators\" />
+    <None Remove="Validators\Dogs\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Commands\Dogs\DeleteDog\" />
@@ -49,5 +51,7 @@
     <Folder Include="Commands\Users\" />
     <Folder Include="Queries\Users\" />
     <Folder Include="Queries\Users\GetAll\" />
+    <Folder Include="Validators\" />
+    <Folder Include="Validators\Dogs\" />
   </ItemGroup>
 </Project>

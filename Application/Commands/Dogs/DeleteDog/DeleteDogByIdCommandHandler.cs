@@ -2,29 +2,34 @@
 using Domain.Models;
 using Infrastructure.Database.RealDatabase;
 using MediatR;
-
+using Infrastructure.RepositoryPatternFiles.DogsPattern;
+using Application.Validators.Dogs;
 
 namespace Application.Commands.Dogs
 {
     public class DeleteDogByIdCommandHandler : IRequestHandler<DeleteDogByIdCommand, Dog>
     {
-        private readonly RealDatabase _realDatabase;
+        private readonly IDogRepository _dogRepository;
+        private readonly DogValidator _dogValidator;
 
-        public DeleteDogByIdCommandHandler(RealDatabase realDatabase)
+        public DeleteDogByIdCommandHandler(IDogRepository dogRepository, DogValidator validator)
         {
-            _realDatabase = realDatabase;
+            _dogRepository = dogRepository;
+            _dogValidator = validator;
         }
-
-        public Task<Dog> Handle(DeleteDogByIdCommand request, CancellationToken cancellationToken)
+        public async Task<Dog> Handle(DeleteDogByIdCommand request, CancellationToken cancellationToken)
         {
-            Dog dogToDelete = _realDatabase.Dogs.FirstOrDefault(dogs => dogs.Id == request.Id)!;
 
-            if (dogToDelete != null)
+            Dog dogToDelete = await _dogRepository.GetDogById(request.Id);
+
+            if (dogToDelete == null)
             {
-                _realDatabase.Dogs.Remove(dogToDelete);
+                return null!;
             }
-            _realDatabase.SaveChangesAsync(cancellationToken);
-            return Task.FromResult(dogToDelete);
+
+            await _dogRepository.DeleteDogById(dogToDelete.Id);
+
+            return dogToDelete;
         }
     }
 }
