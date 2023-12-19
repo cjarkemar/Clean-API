@@ -11,6 +11,7 @@
     <PackageReference Include="MediatR" Version="12.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.14" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.14" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,9 +33,13 @@
     <None Remove="Queries\Birds\GetById\" />
     <None Remove="Commands\Users\" />
     <None Remove="Queries\Users\" />
-    <None Remove="Queries\Users\GetAll\" />
     <None Remove="Validators\" />
     <None Remove="Validators\Dogs\" />
+    <None Remove="Validators\Users\" />
+    <None Remove="Validators\Cats\" />
+    <None Remove="Dtos\MediatR\" />
+    <None Remove="Queries\Dogs\GetDogByProperty\" />
+    <None Remove="Queries\Cats\GetCatByProperty\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Commands\Dogs\DeleteDog\" />
@@ -50,8 +55,12 @@
     <Folder Include="Queries\Birds\GetById\" />
     <Folder Include="Commands\Users\" />
     <Folder Include="Queries\Users\" />
-    <Folder Include="Queries\Users\GetAll\" />
     <Folder Include="Validators\" />
     <Folder Include="Validators\Dogs\" />
+    <Folder Include="Validators\Users\" />
+    <Folder Include="Validators\Cats\" />
+    <Folder Include="Dtos\MediatR\" />
+    <Folder Include="Queries\Dogs\GetDogByProperty\" />
+    <Folder Include="Queries\Cats\GetCatByProperty\" />
   </ItemGroup>
 </Project>

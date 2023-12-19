@@ -7,9 +7,9 @@ using MediatR;
 
 namespace Application.Commands.Users
 {
-    public class AddUserCommand : IRequest<User>
+    public class RegisterUserCommand : IRequest<User>
     {
-        public AddUserCommand(UserDto newUser)
+        public RegisterUserCommand(UserDto newUser)
         {
             NewUser = newUser;
         }

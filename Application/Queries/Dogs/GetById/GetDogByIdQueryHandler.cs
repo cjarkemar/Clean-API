@@ -7,25 +7,19 @@ namespace Application.Queries.Dogs.GetById
     public class GetDogByIdQueryHandler : IRequestHandler<GetDogByIdQuery, Dog>
     {
         //private readonly RealDatabase _realDatabase;
+        private readonly IDogRepository _dogRepository;
 
-        public GetDogByIdQueryHandler(IDogRepository RepositoryDog )
+        public GetDogByIdQueryHandler(IDogRepository dogRepository)
         { 
             //_realDatabase = realDatabase;
-            _repositoryDog RepositoryDog;
+            _dogRepository = dogRepository;
         }
 
         public Task<Dog> Handle(GetDogByIdQuery request, CancellationToken cancellationToken)
         {
-            //Dog wantedDog = _realDatabase.Dogs.FirstOrDefault(dog => dog.Id == request.Id)!;
-            //return Task.FromResult(wantedDog);
+            Dog wantedDog = Task.Run(() => _dogRepository.GetDogById(request.Id, cancellationToken)).Result;
 
-            Dog wantedDog = await _repositoryDog.GetDogById(request.Id);
-
-            if (wantedDog == null)
-            {
-                return null!;
-            }
-            return wantedDog;
+            return Task.FromResult(wantedDog);
         }
     }
 }

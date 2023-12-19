@@ -2,9 +2,12 @@
 using Application.Dtos;
 using Application.Queries.Cats.GetAll;
 using Application.Queries.Cats.GetById;
+using Application.Validators;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Application.Validators.Cats;
+using Application.Queries.Cats.GetCatByProperty;
 
 
 namespace API.Controllers
@@ -14,11 +17,14 @@ namespace API.Controllers
     [Authorize]
     public class CatsController : ControllerBase
     {
-        private readonly IMediator _mediator;
-
-        public CatsController(IMediator mediator)
+        internal readonly IMediator _mediator;
+        internal readonly CatValidator _catValidator;
+        internal readonly GuidValidator _guidValidator;
+        public CatsController(IMediator mediator, CatValidator catValidator, GuidValidator guidValidator)
         {
             _mediator = mediator;
+            _catValidator = catValidator;
+            _guidValidator = guidValidator;
         }
 
         // Get all cats from database
@@ -74,6 +80,21 @@ namespace API.Controllers
                 return NotFound("Katten finns inte med i listan");
             }
             return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("getCatByProperty"), AllowAnonymous] //weight, breed, color
+        public async Task<IActionResult> GetCatByBreed([FromQuery] string? breed, [FromQuery] int? weight)
+        {
+            var wantedCatProperty = await _mediator.Send(new GetCatByPropertyQuery(breed!, weight));
+
+            if (wantedCatProperty.Count == 0)
+            {
+                ModelState.AddModelError("Cat not found", $"No cats found based on the specified criteria");
+                return BadRequest(ModelState);
+            }
+
+            return Ok(wantedCatProperty);
         }
     }
 }

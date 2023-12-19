@@ -1,96 +1,181 @@
-﻿using Domain.Models;
-using Infrastructure.Database.RealDatabase;
+﻿using System;
+using Domain.Models;
+using Domain.Models.User;
+using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.RepositoryPatternFiles.DogsPattern
 {
     public class DogRepository : IDogRepository
     {
         private readonly RealDatabase _realDatabase;
-        //Implement ILogger
+        private readonly ILogger<DogRepository> _logger;
 
-        public DogRepository(RealDatabase realDatabase)
+        public DogRepository(RealDatabase realDatabase, ILogger<DogRepository> logger)
         {
             _realDatabase = realDatabase;
+            _logger = logger;
         }
 
-        public async Task<Dog> AddDog(Dog newDog)
+        public Task<List<Dog>> GetAllDogs(CancellationToken cancellationToken)
         {
             try
             {
-                _realDatabase.Dogs.Add(newDog);
-                _realDatabase.SaveChanges();
-                return await Task.FromResult(newDog);
-            }
-            catch (Exception ex)
-            {
-                throw new ArgumentException(ex.Message);
-            }
-        }
+                List<Dog> allDogsFromDatabase = _realDatabase.Dogs.ToList();
 
-        public async Task<Dog> DeleteDogById(Guid id)
-        {
-            try
-            {
-                Dog dogToDelete = await GetDogById(id);
-
-                _realDatabase.Dogs.Remove(dogToDelete);
-
-                _realDatabase.SaveChanges();
-
-                return await Task.FromResult(dogToDelete);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"An error occured while deleting a dog with Id {id} from the database", ex);
-            }
-        }
-
-        public async Task<List<Dog>> GetAllDogsAsync()
-        {
-            try
-            {
-                return await _realDatabase.Dogs.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occured while getting all dogs from the database", ex);
-            }
-        }
-
-        public async Task<Dog> GetDogById(Guid dogId)
-        {
-            try
-            {
-                Dog? wantedDog = await _realDatabase.Dogs.FirstOrDefaultAsync(dog => dog.Id == dogId);
-
-                if (wantedDog == null)
+                foreach (var dog in allDogsFromDatabase)
                 {
-                    throw new Exception($"There was no dog with Id {dogId} in the database");
+                    var DogOwner = _realDatabase.DogOwner.FirstOrDefault(ud => ud.DogId == dog.Id);
+
+                    if (DogOwner != null)
+                    {
+                        var user = _realDatabase.Users.FirstOrDefault(u => u.Id == DogOwner.UserId);
+                        dog.OwnerDogUsername = user!.Username;
+                    }
                 }
 
-                return await Task.FromResult(wantedDog);
+                return Task.FromResult(allDogsFromDatabase);
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occured while getting a dog by Id {dogId} from database", ex);
+                _logger.LogError("An error occurred while getting all dogs from the database");
+                throw new Exception("An error occurred while getting all dogs from the database", ex);
             }
         }
 
-        public async Task<Dog> UpdateDog(Dog updatedDog)
+        public Task<Dog> GetDogById(Guid id, CancellationToken cancellationToken)
         {
             try
             {
-                _realDatabase.Dogs.Update(updatedDog);
+                Dog wantedDog = _realDatabase.Dogs.FirstOrDefault(dog => dog.Id == id)!;
+                var DogOwner = _realDatabase.DogOwner.FirstOrDefault(ud => ud.DogId == wantedDog.Id);
 
-                _realDatabase.SaveChanges();
-
-                return await Task.FromResult(updatedDog);
+                if (DogOwner != null)
+                {
+                    var user = _realDatabase.Users.FirstOrDefault(u => u.Id == DogOwner.UserId);
+                    wantedDog.OwnerDogUsername = user!.Username;
+                }
+                return Task.FromResult(wantedDog);
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occured while updating a dog by Id {updatedDog.Id} from database", ex);
+                _logger.LogError("An error occurred while getting all dogs from the database");
+                throw new Exception("An error occurred while getting all dogs from the database", ex);
             }
         }
+
+        public Task<List<Dog>> GetDogByProperty(string? breed, int? weight, CancellationToken cancellationToken)
+        {
+            try
+            {
+                List<Dog> DogsfilteredByProp= _realDatabase.Dogs
+                                        .Where(d => (string.IsNullOrEmpty(breed) || d.Breed == breed) &&
+                                        (weight == null || d.Weight >= weight))
+                                        .ToList();
+
+                foreach (var dog in DogsfilteredByProp)
+                {
+                    var DogOwner = _realDatabase.DogOwner.FirstOrDefault(ud => ud.DogId == dog.Id);
+
+                    if (DogOwner == null)
+                    {
+                        var user = _realDatabase.Users.FirstOrDefault(u => u.Id == DogOwner.UserId);
+                        dog.OwnerDogUsername = user!.Username;
+                    }
+                }
+
+                return Task.FromResult(DogsfilteredByProp);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("An error occurred while getting all dogs from the database");
+                throw new Exception("An error occurred while getting all dogs from the database", ex);
+            }
+        }
+
+        public async Task<Dog> AddDog(Dog newdog, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var user = _realDatabase.Users
+                    .FirstOrDefault(u => u.Username == newdog.OwnerDogUsername);
+
+                if (user == null)
+                {
+                    // if the user is not found
+                    _logger.LogError($"Username {newdog.OwnerDogUsername} not found");
+                    throw new Exception($"Username {newdog.OwnerDogUsername} not found");
+                }
+
+                newdog.DogOwner = new List<DogOwner>
+                {
+                    new DogOwner { UserId = user.Id , DogId = newdog.Id},
+                };
+
+                _realDatabase.Dogs.Add(newdog);
+                await _realDatabase.SaveChangesAsync(cancellationToken);
+
+                return newdog;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while adding a dog to the database");
+                throw new Exception("An error occurred while adding a dog to the database", ex);
+            }
+        }
+
+        public async Task<Dog> UpdateDog(Guid id, string newName, bool Barks, string breed, int weight, string OwnerDogUserName, CancellationToken cancellationToken)
+        {
+            try
+            {
+                Dog dogToUpdate = _realDatabase.Dogs.FirstOrDefault(dog => dog.Id == id)!;
+
+                dogToUpdate.Name = newName;
+                dogToUpdate.Barks = Barks;
+                dogToUpdate.Breed = breed;
+                dogToUpdate.Weight = weight;
+                dogToUpdate.OwnerDogUsername = OwnerDogUserName;
+
+                var user = _realDatabase.Users
+                    .FirstOrDefault(u => u.Username == dogToUpdate.OwnerDogUsername);
+                if (user != null)
+                {
+                    dogToUpdate.DogOwner = new List<DogOwner>
+                    {
+                        new DogOwner { UserId = user.Id , DogId = dogToUpdate.Id},
+                    };
+                }
+
+                await _realDatabase.SaveChangesAsync();
+
+                return dogToUpdate;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while deleting a dog with ID {id} from the database");
+                throw new Exception($"An error occurred while deleting a dog with ID {id} from the database", ex);
+            }
+        }
+
+        public async Task<Dog> DeleteDogById(Guid id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var dogToDelete = _realDatabase.Dogs.FirstOrDefault(d => d.Id == id);
+
+                _realDatabase.Dogs.Remove(dogToDelete!);
+                await _realDatabase.SaveChangesAsync();
+                return dogToDelete;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while deleting a dog with ID {id} from the database");
+                throw new Exception($"An error occurred while deleting a dog with ID {id} from the database", ex);
+            }
+
+        }
+
     }
+
 }

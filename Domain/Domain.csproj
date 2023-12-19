@@ -7,10 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Models\User\" />
+    <None Remove="Models\Users\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\User\" />
+    <Folder Include="Models\Users\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />

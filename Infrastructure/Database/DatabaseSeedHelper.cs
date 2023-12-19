@@ -19,30 +19,30 @@ namespace Infrastructure.Database
         private static void Seed(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Dog>().HasData(
-                new Dog { Id = Guid.NewGuid(), Name = "OldG" },
-                new Dog { Id = Guid.NewGuid(), Name = "NewG" },
-                new Dog { Id = Guid.NewGuid(), Name = "Björn" },
-                new Dog { Id = Guid.NewGuid(), Name = "Patrik" },
-                new Dog { Id = Guid.NewGuid(), Name = "Alfred" },
-                new Dog { Id = new Guid("12345678-1234-5678-1234-567812345671"), Name = "TestDogForUnitTests1" },
-                new Dog { Id = new Guid("12345678-1234-5678-1234-567812345672"), Name = "TestDogForUnitTests2" },
-                new Dog { Id = new Guid("12345678-1234-5678-1234-567812345673"), Name = "TestDogForUnitTests3" },
-                new Dog { Id = new Guid("12345678-1234-5678-1234-567812345674"), Name = "TestDogForUnitTests4" }
+                new Dog { Id = Guid.NewGuid(), Name = "OldG", Barks = true, Breed = "Golden Retriever", Weight = 30},
+                new Dog { Id = Guid.NewGuid(), Name = "NewG", Barks = false, Breed = "Labrador", Weight = 15 },
+                new Dog { Id = Guid.NewGuid(), Name = "Björn" , Barks = true, Breed = "Daschund", Weight = 4 },
+                new Dog { Id = Guid.NewGuid(), Name = "Patrik" , Barks = true, Breed = "chihuahua", Weight = 4 },
+                new Dog { Id = Guid.NewGuid(), Name = "Alfred", Barks = true, Breed = "chihuahua", Weight = 4 }
+
+
             );
 
             modelBuilder.Entity<Cat>().HasData(
-                new Cat { Id = Guid.NewGuid(), Name = "Garfield", LikesToPlay = true },
-                new Cat { Id = Guid.NewGuid(), Name = "HorseCatDude", LikesToPlay = false },
-                new Cat { Id = new Guid("12345678-1234-5678-1234-567812345675"), Name = "AmandatheUglyCat", LikesToPlay = true }
+                new Cat { Id = Guid.NewGuid(), Name = "Garfield", LikesToPlay = true , Breed = "Bergskatt", Weight = 3},
+                new Cat { Id = Guid.NewGuid(), Name = "HorseCatDude", LikesToPlay = false , Breed = "Bergskatt", Weight = 3 }
+                
                 
             );
 
             modelBuilder.Entity<Bird>().HasData(
-
-                new Bird { Id = Guid.NewGuid(), Name = "TwitterGod", CanFly = true },
-                new Bird { Id = Guid.NewGuid(), Name = "TobiasNugget", CanFly = false}
-
-                );
+               new Bird { Id = Guid.NewGuid(), Name = "TobiasNugget", CanFly = true, Color = "Green&Yellow" },
+               new Bird { Id = Guid.NewGuid(), Name = "Allanballan", CanFly = false, Color = "Yellow" },
+               new Bird { Id = Guid.NewGuid(), Name = "Kalle", CanFly = false, Color = "Black" },
+               new Bird { Id = Guid.NewGuid(), Name = "Cherry", CanFly = true, Color = "Purple" }
+              
+           );
+               
 
          
 

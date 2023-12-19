@@ -1,5 +1,5 @@
 ﻿using Domain.Models;
-using Infrastructure.Database.RealDatabase;
+using Infrastructure.Database;
 using MediatR;
 using Infrastructure.RepositoryPatternFiles.DogsPattern;
 using Application.Validators.Dogs;
@@ -19,20 +19,16 @@ namespace Application.Commands.Dogs.UpdateDog
         }
         public async Task<Dog> Handle(UpdateDogByIdCommand request, CancellationToken cancellationToken)
         {
+            var Id = request.Id;
+            var Name = request.UpdatedDog.Name;
+            var Barks = request.UpdatedDog.Barks;
+            var Breed = request.UpdatedDog.Breed;
+            int Weight = request.UpdatedDog.Weight;
+            var OwnerDogUserName = request.UpdatedDog.OwnerDogUserName;
 
-            Dog dogToUpdate = await _dogRepository.GetDogById(request.Id);
+            Dog dogToUpdate = await _dogRepository.UpdateDog(Id, Name, Barks, Breed, Weight, OwnerDogUserName, cancellationToken);
 
-            if (dogToUpdate == null)
-            {
-                return null!;
-            }
-
-
-            dogToUpdate.Name = request.DogToUpdate.Name;
-
-            var updatedDog = await _dogRepository.UpdateDog(dogToUpdate);
-
-            return updatedDog;
+            return dogToUpdate;
         }
     }
 }

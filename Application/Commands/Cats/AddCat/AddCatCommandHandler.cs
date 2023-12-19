@@ -1,16 +1,23 @@
-﻿using Domain.Models;
-using Infrastructure.Database.RealDatabase;
+﻿
+using Domain.Models;
+using Infrastructure.Database;
 using MediatR;
+using Infrastructure.RepositoryPatternFiles.CatsPattern;
+using Application.Validators.Cats;
+
 
 namespace Application.Commands.Cats
 {
-    public class AddCatCommandHandler : IRequestHandler<AddCatCommand, Cat>
+    public sealed class AddCatCommandHandler : IRequestHandler<AddCatCommand, Cat>
     {
-        private readonly RealDatabase _realDatabase;
+        private readonly ICatRepository _catRepository;
+        private readonly CatValidator _catValidator;
 
-        public AddCatCommandHandler(RealDatabase realDatabase)
+        public AddCatCommandHandler(ICatRepository catRepository, CatValidator catValidator)
         {
-            _realDatabase = realDatabase;
+            _catRepository = catRepository;
+
+            _catValidator = catValidator;
         }
 
         public Task<Cat> Handle(AddCatCommand request, CancellationToken cancellationToken)
@@ -19,13 +26,15 @@ namespace Application.Commands.Cats
             {
                 Id = Guid.NewGuid(),
                 Name = request.NewCat.Name,
-                LikesToPlay = request.NewCat.LikesToPlay
+                LikesToPlay = request.NewCat.LikesToPlay,
+                Breed = request.NewCat.Breed,
+                Weight = request.NewCat.Weight,
+                OwnerCatUserName = request.NewCat.OwnerCatUserName,
             };
 
-            _realDatabase.Cats.Add(catToCreate);
-            _realDatabase.SaveChangesAsync(cancellationToken);
+            _catRepository.AddCat(catToCreate, cancellationToken);
+
             return Task.FromResult(catToCreate);
         }
     }
 }
-
