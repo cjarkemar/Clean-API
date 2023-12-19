@@ -7,6 +7,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Application.Validators.Cats;
+using Application.Queries.Cats.GetCatByProperty;
 
 
 namespace API.Controllers
@@ -79,6 +80,21 @@ namespace API.Controllers
                 return NotFound("Katten finns inte med i listan");
             }
             return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("getCatByProperty"), AllowAnonymous] //weight, breed, color
+        public async Task<IActionResult> GetCatByBreed([FromQuery] string? breed, [FromQuery] int? weight)
+        {
+            var wantedCatProperty = await _mediator.Send(new GetCatByPropertyQuery(breed!, weight));
+
+            if (wantedCatProperty.Count == 0)
+            {
+                ModelState.AddModelError("Cat not found", $"No cats found based on the specified criteria");
+                return BadRequest(ModelState);
+            }
+
+            return Ok(wantedCatProperty);
         }
     }
 }

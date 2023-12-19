@@ -1,31 +1,40 @@
-﻿//using Domain.Models;
-//using Infrastructure.Database.RealDatabase;
-//using MediatR;
+﻿
+using Domain.Models;
+using Infrastructure.Database;
+using MediatR;
+using Infrastructure.RepositoryPatternFiles.CatsPattern;
+using Application.Validators.Cats;
 
-//namespace Application.Commands.Cats
-//{
-//    public class AddCatCommandHandler : IRequestHandler<AddCatCommand, Cat>
-//    {
-//        private readonly RealDatabase _realDatabase;
 
-//        public AddCatCommandHandler(RealDatabase realDatabase)
-//        {
-//            _realDatabase = realDatabase;
-//        }
+namespace Application.Commands.Cats
+{
+    public sealed class AddCatCommandHandler : IRequestHandler<AddCatCommand, Cat>
+    {
+        private readonly ICatRepository _catRepository;
+        private readonly CatValidator _catValidator;
 
-//        public Task<Cat> Handle(AddCatCommand request, CancellationToken cancellationToken)
-//        {
-//            Cat catToCreate = new()
-//            {
-//                Id = Guid.NewGuid(),
-//                Name = request.NewCat.Name,
-//                LikesToPlay = request.NewCat.LikesToPlay
-//            };
+        public AddCatCommandHandler(ICatRepository catRepository, CatValidator catValidator)
+        {
+            _catRepository = catRepository;
 
-//            _realDatabase.Cats.Add(catToCreate);
-//            _realDatabase.SaveChangesAsync(cancellationToken);
-//            return Task.FromResult(catToCreate);
-//        }
-//    }
-//}
+            _catValidator = catValidator;
+        }
 
+        public Task<Cat> Handle(AddCatCommand request, CancellationToken cancellationToken)
+        {
+            Cat catToCreate = new()
+            {
+                Id = Guid.NewGuid(),
+                Name = request.NewCat.Name,
+                LikesToPlay = request.NewCat.LikesToPlay,
+                Breed = request.NewCat.Breed,
+                Weight = request.NewCat.Weight,
+                OwnerCatUserName = request.NewCat.OwnerCatUserName,
+            };
+
+            _catRepository.AddCat(catToCreate, cancellationToken);
+
+            return Task.FromResult(catToCreate);
+        }
+    }
+}

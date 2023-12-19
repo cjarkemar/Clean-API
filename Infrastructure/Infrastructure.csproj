@@ -17,6 +17,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.14" />
     <PackageReference Include="Moq" Version="4.20.70" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,16 +26,20 @@
 
   <ItemGroup>
     <None Remove="Migrations\" />
-    <None Remove="Authentication\" />
     <None Remove="RepositoryPatternFiles\" />
     <None Remove="RepositoryPatternFiles\DogsPattern\" />
     <None Remove="RepositoryPatternFiles\CatsPattern\" />
+    <None Remove="RepositoryPatternFiles\UserPattern\" />
+    <None Remove="RepositoryPatternFiles\Authorization\" />
+    <None Remove="RepositoryPatternFiles\BirdsPattern\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="Authentication\" />
     <Folder Include="RepositoryPatternFiles\" />
     <Folder Include="RepositoryPatternFiles\DogsPattern\" />
     <Folder Include="RepositoryPatternFiles\CatsPattern\" />
+    <Folder Include="RepositoryPatternFiles\UserPattern\" />
+    <Folder Include="RepositoryPatternFiles\Authorization\" />
+    <Folder Include="RepositoryPatternFiles\BirdsPattern\" />
   </ItemGroup>
 </Project>

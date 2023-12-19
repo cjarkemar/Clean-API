@@ -37,6 +37,9 @@
     <None Remove="Validators\Dogs\" />
     <None Remove="Validators\Users\" />
     <None Remove="Validators\Cats\" />
+    <None Remove="Dtos\MediatR\" />
+    <None Remove="Queries\Dogs\GetDogByProperty\" />
+    <None Remove="Queries\Cats\GetCatByProperty\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Commands\Dogs\DeleteDog\" />
@@ -56,5 +59,8 @@
     <Folder Include="Validators\Dogs\" />
     <Folder Include="Validators\Users\" />
     <Folder Include="Validators\Cats\" />
+    <Folder Include="Dtos\MediatR\" />
+    <Folder Include="Queries\Dogs\GetDogByProperty\" />
+    <Folder Include="Queries\Cats\GetCatByProperty\" />
   </ItemGroup>
 </Project>

@@ -2,6 +2,8 @@
 using Application.Dtos;
 using Application.Queries.Birds.GetAll;
 using Application.Queries.Birds.GetById;
+using Application.Validators;
+using Application.Validators.Cats;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +16,14 @@ namespace API.Controllers
     [Authorize]
     public class BirdsController : ControllerBase
     {
-        private readonly IMediator _mediator;
-
-        public BirdsController(IMediator mediator)
+        internal readonly IMediator _mediator;
+        internal readonly CatValidator _catValidator;
+        internal readonly GuidValidator _guidValidator;
+        public BirdsController(IMediator mediator, CatValidator catValidator, GuidValidator guidValidator)
         {
             _mediator = mediator;
+            _catValidator = catValidator;
+            _guidValidator = guidValidator;
         }
 
         // Get all birds from database

@@ -1,13 +1,17 @@
-﻿// UsersController
-using System;
-using Application.Commands.Users;
+﻿using Application.Commands.Users;
 using Application.Dtos;
+using Application.Queries.Users;
+using Application.Validators.User;
+using Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Application.Validators.User;
-using Application.Queries.Users;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace API.Controllers.UsersController
+namespace API.Controllers.AuthController
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -22,42 +26,53 @@ namespace API.Controllers.UsersController
             _userValidator = userValidator;
         }
 
-        // GET: api/<UsersController>
-        [HttpPost]
-        [Route("Login")]
-        public async Task<IActionResult> GetToken(string username, string password)
+        [HttpPost("register")]
+        [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Register([FromBody] UserDto userToRegister)
         {
-            var token = await _mediator.Send(new GetTokenForUserQuery(username, password));
+            var inputValidation = _userValidator.Validate(userToRegister);
 
-            if (token == null)
+            if (!inputValidation.IsValid)
             {
-                return NotFound("User not found");
-            }
-
-            return Ok(token);
-
-        }
-        [HttpPost]
-        [Route("Register")]
-        public async Task<IActionResult> RegisterUser([FromBody] UserDto newUser)
-        {
-            var userValidator = _userValidator.Validate(newUser);
-
-            if (!userValidator.IsValid)
-            {
-                return BadRequest(userValidator.Errors.ConvertAll(errors => errors.ErrorMessage));
+                return BadRequest(inputValidation.Errors.ConvertAll(errors => errors.ErrorMessage));
             }
 
             try
             {
-                return Ok(await _mediator.Send(new AddUserCommand(newUser)));
+                return Ok(await _mediator.Send(new RegisterUserCommand(userToRegister)));
+            }
+            catch (ArgumentException e)
+            {
+                //// Log the error and return an error response
+                //_logger.LogError(e, "Error registering user");
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Login([FromBody] UserDto userToLogin)
+        {
+            var inputValidation = _userValidator.Validate(userToLogin);
+
+            if (!inputValidation.IsValid)
+            {
+                return BadRequest(inputValidation.Errors.ConvertAll(errors => errors.ErrorMessage));
+            }
+
+            try
+            {
+                string token = await _mediator.Send(new LoginUserQuery(userToLogin));
+
+                return Ok(new TokenDto { TokenValue = token });
             }
             catch (Exception ex)
             {
-
-                throw new Exception(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
-    }
 
+
+
+    }
 }

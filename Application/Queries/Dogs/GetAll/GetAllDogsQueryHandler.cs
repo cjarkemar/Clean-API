@@ -1,6 +1,6 @@
 ﻿using Application.Queries.Dogs.GetAll;
 using Domain.Models;
-using Infrastructure.Database.RealDatabase;
+using Infrastructure.Database;
 using MediatR;
 using Infrastructure.RepositoryPatternFiles.DogsPattern;
 
@@ -18,14 +18,10 @@ namespace Application.Queries.Dogs
         {
             _dogRepository = dogRepository;
         }
-        public async Task<List<Dog>> Handle(GetAllDogsQuery request, CancellationToken cancellationToken)
+        public Task<List<Dog>> Handle(GetAllDogsQuery request, CancellationToken cancellationToken)
         {
-            //List<Dog> allDogsFromRealDatabase = _realDatabase.Dogs.ToList();
-            
-            List<Dog> alldogs = await _dogRepository.GetAllDogsAsync();
-
-            //return Task.FromResult(allDogsFromRealDatabase);
-            return alldogs;
+            List<Dog> allDogsFromDatabase = Task.Run(() => _dogRepository.GetAllDogs(cancellationToken)).Result;
+            return Task.FromResult(allDogsFromDatabase);
         }
     }
 }

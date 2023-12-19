@@ -27,14 +27,18 @@
     <None Remove="Controllers\DogsController\" />
     <None Remove="Controllers\CatsController\" />
     <None Remove="Controllers\BirdsController\" />
-    <None Remove="Controllers\UserController\" />
     <None Remove="Swagger\" />
+    <None Remove="Authentication\" />
+    <None Remove="Helpers\" />
+    <None Remove="Controllers\UserController\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\DogsController\" />
     <Folder Include="Controllers\CatsController\" />
     <Folder Include="Controllers\BirdsController\" />
-    <Folder Include="Controllers\UserController\" />
     <Folder Include="Swagger\" />
+    <Folder Include="Authentication\" />
+    <Folder Include="Helpers\" />
+    <Folder Include="Controllers\UserController\" />
   </ItemGroup>
 </Project>

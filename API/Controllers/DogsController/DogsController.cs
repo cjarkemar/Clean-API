@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Application.Validators.Dogs;
 using Application.Validators;
+using Application.Queries.Dogs.GetDogByProperty;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -31,7 +32,7 @@ namespace API.Controllers.DogsController
 
         // Get all dogs from database
         [HttpGet]
-        [Route("getAllDogs")]
+        [Route("getAllDogs"), AllowAnonymous]
 
         public async Task<IActionResult> GetAllDogs() // metod för att hämta alla hundar i Db 
         {
@@ -52,7 +53,7 @@ namespace API.Controllers.DogsController
 
         // Get a dog by Id
         [HttpGet] 
-        [Route("getDogById/{dogId}")]  
+        [Route("getDogById/{dogId}"), AllowAnonymous]  
         public async Task<IActionResult> GetDogById(Guid dogId)  // metod för att hämta en hund baserat på dess ID.
         {
             var guidValidator = _guidValidator.Validate(dogId);  // Validerar 'dogId' för att se så att deN är GUID.
@@ -83,7 +84,7 @@ namespace API.Controllers.DogsController
 
         // Create a new dog 
         [HttpPost]
-        [Route("addNewDog")]
+        [Route("addNewDog"), /*, Authorize(Roles = "Admin")*/]
         [ProducesResponseType(typeof(DogDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> AddDog([FromBody] DogDto newDog)
         {
@@ -105,6 +106,8 @@ namespace API.Controllers.DogsController
         }
 
         // Update a specific dog
+        [HttpPut]
+        [Route("updateDog/{updatedDogId}")/*, Authorize(Roles = "Admin")*/]
         public async Task<IActionResult> UpdateDog([FromBody] DogDto dogToUpdate, Guid updateDogId)
         {
             var dogValidator = _dogValidator.Validate(dogToUpdate);
@@ -152,15 +155,34 @@ namespace API.Controllers.DogsController
 
             try
             {
-                await _mediator.Send(new DeleteDogByIdCommand(deleteDogId));
+                var dog = await _mediator.Send(new DeleteDogByIdCommand(deleteDogId));
+                if (dog == null)
+                {
+                    return NotFound($"Dog with Id:{deleteDogId} does not exist in database");
+                }
             }
             catch (Exception ex)
             {
-
                 throw new Exception(ex.Message);
             }
 
-            return NotFound();
+            return NoContent(); 
+        }
+
+
+        [HttpGet]
+        [Route("getDogByProperty"), AllowAnonymous] //weight, breed, color
+        public async Task<IActionResult> GetDogByBreed([FromQuery] string? breed, [FromQuery] int? weight)
+        {
+            var wantedDogProperty = await _mediator.Send(new GetDogByPropertyQuery(breed!, weight));
+
+            if (wantedDogProperty.Count == 0)
+            {
+                ModelState.AddModelError("DogNotFound", $"No dogs found based on the specified criteria");
+                return BadRequest(ModelState);
+            }
+
+            return Ok(wantedDogProperty);
         }
 
 
