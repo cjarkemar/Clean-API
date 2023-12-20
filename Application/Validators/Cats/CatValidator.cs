@@ -1,9 +1,7 @@
-﻿// CatValidator
-using System;
-using Application.Dtos;
+﻿using Application.Dtos;
 using FluentValidation;
 
-namespace Application.Validators.Cats
+namespace Application.Validators.Cat
 {
     public class CatValidator : AbstractValidator<CatDto>
     {
@@ -17,4 +15,3 @@ namespace Application.Validators.Cats
         }
     }
 }
-

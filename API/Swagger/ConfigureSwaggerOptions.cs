@@ -4,33 +4,34 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace API.Swagger
 {
-    public class Configuration : IConfigureOptions<SwaggerGenOptions>
+    public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
     {
         public void Configure(SwaggerGenOptions options)
         {
-            options.SwaggerDoc("v1", new OpenApiInfo { Title = "My API-CQRS-APP", Version = "v1" });
-
-            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
             {
-                Description = "Authorize with your bearer token that generates when you login",
-                Type = SecuritySchemeType.Http,
-                Scheme = "bearer"
+                In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                Description = "Please provide a valid token",
+                Name = "Authorization",
+                Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "Bearer"
             });
 
-            options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
+            options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
             {
-                Reference = new OpenApiReference
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] { }
                 }
-            },
-            Array.Empty<string>()
-        }
-    });
+            });
         }
     }
 }

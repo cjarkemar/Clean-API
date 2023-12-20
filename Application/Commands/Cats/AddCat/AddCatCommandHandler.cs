@@ -1,40 +1,33 @@
-﻿
-using Domain.Models;
-using Infrastructure.Database;
+﻿using Domain.Models;
+using Infrastructure.Repositories.Cats;
 using MediatR;
-using Infrastructure.RepositoryPatternFiles.CatsPattern;
-using Application.Validators.Cats;
 
-
-namespace Application.Commands.Cats
+namespace Application.Commands.Cats.AddCat
 {
-    public sealed class AddCatCommandHandler : IRequestHandler<AddCatCommand, Cat>
+    public class AddCatCommandHandler : IRequestHandler<AddCatCommand, Cat>
     {
         private readonly ICatRepository _catRepository;
-        private readonly CatValidator _catValidator;
 
-        public AddCatCommandHandler(ICatRepository catRepository, CatValidator catValidator)
+        public AddCatCommandHandler(ICatRepository catRepository)
         {
             _catRepository = catRepository;
-
-            _catValidator = catValidator;
         }
 
-        public Task<Cat> Handle(AddCatCommand request, CancellationToken cancellationToken)
+        public async Task<Cat> Handle(AddCatCommand request, CancellationToken cancellationToken)
         {
+
             Cat catToCreate = new()
             {
-                Id = Guid.NewGuid(),
+                AnimalId = Guid.NewGuid(),
                 Name = request.NewCat.Name,
-                LikesToPlay = request.NewCat.LikesToPlay,
                 Breed = request.NewCat.Breed,
-                Weight = request.NewCat.Weight,
-                OwnerCatUserName = request.NewCat.OwnerCatUserName,
+                Weight = request.NewCat.Weight
             };
 
-            _catRepository.AddCat(catToCreate, cancellationToken);
+            await _catRepository.AddCat(catToCreate, request.UserId);
 
-            return Task.FromResult(catToCreate);
+
+            return catToCreate;
         }
     }
 }

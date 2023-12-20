@@ -32,14 +32,20 @@
     <None Remove="Queries\Birds\GetAll\" />
     <None Remove="Queries\Birds\GetById\" />
     <None Remove="Commands\Users\" />
-    <None Remove="Queries\Users\" />
     <None Remove="Validators\" />
     <None Remove="Validators\Dogs\" />
     <None Remove="Validators\Users\" />
     <None Remove="Validators\Cats\" />
-    <None Remove="Dtos\MediatR\" />
-    <None Remove="Queries\Dogs\GetDogByProperty\" />
-    <None Remove="Queries\Cats\GetCatByProperty\" />
+    <None Remove="Commands\Users\Register\" />
+    <None Remove="Commands\Users\DeleteUsers\" />
+    <None Remove="Commands\Users\UpdateUsers\" />
+    <None Remove="Queries\UsersGetToken\" />
+    <None Remove="Queries\Animals\" />
+    <None Remove="Queries\Animals\GetAll\" />
+    <None Remove="Queries\Animals\GetAllById\" />
+    <None Remove="Queries\Birds\GetColor\" />
+    <None Remove="Queries\Cats\GetWeightAndBreed\" />
+    <None Remove="Queries\Dogs\GetWeightAndBreed\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Commands\Dogs\DeleteDog\" />
@@ -54,13 +60,19 @@
     <Folder Include="Queries\Birds\GetAll\" />
     <Folder Include="Queries\Birds\GetById\" />
     <Folder Include="Commands\Users\" />
-    <Folder Include="Queries\Users\" />
     <Folder Include="Validators\" />
     <Folder Include="Validators\Dogs\" />
     <Folder Include="Validators\Users\" />
     <Folder Include="Validators\Cats\" />
-    <Folder Include="Dtos\MediatR\" />
-    <Folder Include="Queries\Dogs\GetDogByProperty\" />
-    <Folder Include="Queries\Cats\GetCatByProperty\" />
+    <Folder Include="Commands\Users\Register\" />
+    <Folder Include="Commands\Users\DeleteUsers\" />
+    <Folder Include="Commands\Users\UpdateUsers\" />
+    <Folder Include="Queries\UsersGetToken\" />
+    <Folder Include="Queries\Animals\" />
+    <Folder Include="Queries\Animals\GetAll\" />
+    <Folder Include="Queries\Animals\GetAllById\" />
+    <Folder Include="Queries\Birds\GetColor\" />
+    <Folder Include="Queries\Cats\GetWeightAndBreed\" />
+    <Folder Include="Queries\Dogs\GetWeightAndBreed\" />
   </ItemGroup>
 </Project>

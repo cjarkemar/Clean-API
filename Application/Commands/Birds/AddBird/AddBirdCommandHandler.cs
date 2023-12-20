@@ -1,30 +1,32 @@
-﻿using Domain.Models.Animal;
-using Infrastructure.Database;
+﻿using Domain.Models;
+using Infrastructure.Repositories.Birds;
 using MediatR;
 
-namespace Application.Commands.Birds
+namespace Application.Commands.Birds.AddBird
 {
     public class AddBirdCommandHandler : IRequestHandler<AddBirdCommand, Bird>
     {
-        private readonly RealDatabase _realDatabase;
+        private readonly IBirdRepository _birdRepository;
 
-        public AddBirdCommandHandler(RealDatabase realDatabase)
+        public AddBirdCommandHandler(IBirdRepository birdRepository)
         {
-            _realDatabase = realDatabase;
+            _birdRepository = birdRepository;
         }
 
-        public Task<Bird> Handle(AddBirdCommand request, CancellationToken cancellationToken)
+        public async Task<Bird> Handle(AddBirdCommand request, CancellationToken cancellationToken)
         {
             Bird birdToCreate = new()
             {
-                Id = Guid.NewGuid(),
+                AnimalId = Guid.NewGuid(),
                 Name = request.NewBird.Name,
-                CanFly = request.NewBird.CanFly
+                CanFly = request.NewBird.CanFly,
+                Color = request.NewBird.Color
+
             };
 
-            _realDatabase.Birds.Add(birdToCreate);
-            return Task.FromResult(birdToCreate);
+            var createdBird = await _birdRepository.AddBird(birdToCreate, request.UserId);
+
+            return createdBird;
         }
     }
 }
-

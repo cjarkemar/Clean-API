@@ -1,30 +1,33 @@
-﻿//using Domain.Models;
-//using Infrastructure.Database.RealDatabase;
-//using MediatR;
+﻿using Domain.Models;
+using Infrastructure.Repositories.Cats;
+using MediatR;
 
-//namespace Application.Commands.Cats
-//{
-//    public class UpdateCatByIdCommandHandler : IRequestHandler<UpdateCatByIdCommand, Cat>
-//    {
-//        private readonly RealDatabase _realDatabase;
+namespace Application.Commands.Cats.UpdateCat
+{
+    public class UpdateCatByIdCommandHandler : IRequestHandler<UpdateCatByIdCommand, Cat>
+    {
+        private readonly ICatRepository _catRepository;
 
-//        public UpdateCatByIdCommandHandler(RealDatabase realDatabase)
-//        {
-//            _realDatabase = realDatabase;
-//        }
+        public UpdateCatByIdCommandHandler(ICatRepository catRepository)
+        {
+            _catRepository = catRepository;
+        }
 
-//        public Task<Cat> Handle(UpdateCatByIdCommand request, CancellationToken cancellationToken)
-//        {
-//            Cat catToUpdate = _realDatabase.Cats.FirstOrDefault(cat => cat.Id == request.Id)!;
+        public async Task<Cat> Handle(UpdateCatByIdCommand request, CancellationToken cancellationToken)
+        {
+            Cat catToUpdate = await _catRepository.GetCatById(request.Id);
 
-//            if (catToUpdate != null)
-//            {
-//                catToUpdate.Name = request.UpdatedCat.Name;
-//                catToUpdate.LikesToPlay = request.UpdatedCat.LikesToPlay;
-//            }
-//            _realDatabase.SaveChangesAsync(cancellationToken);
-//            return Task.FromResult(catToUpdate);
-//        }
-//    }
-//}
+            if (catToUpdate == null)
+            {
+                return null!;
+            }
 
+            catToUpdate.Name = request.CatToUpdate.Name;
+            catToUpdate.LikesToPlay = request.CatToUpdate.LikesToPlay;
+
+            await _catRepository.UpdateCat(catToUpdate);
+
+            return catToUpdate;
+        }
+    }
+}

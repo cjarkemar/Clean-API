@@ -1,15 +1,11 @@
 ﻿using Domain.Models;
-using Application.Queries.Cats.GetAll;
-using Infrastructure.Database;
+using Infrastructure.Repositories.Cats;
 using MediatR;
-using Infrastructure.RepositoryPatternFiles.CatsPattern;
 
-
-namespace Application.Queries.Cats
+namespace Application.Queries.Cats.GetAll
 {
-    public class GetAllCatsQueryHandler : IRequestHandler<GetAllCatsQuery, List<Cat>>
+    internal sealed class GetAllCatsQueryHandler : IRequestHandler<GetAllCatsQuery, List<Cat>>
     {
-        //private readonly RealDatabase _realDatabase;
         private readonly ICatRepository _catRepository;
 
         public GetAllCatsQueryHandler(ICatRepository catRepository)
@@ -17,14 +13,10 @@ namespace Application.Queries.Cats
             _catRepository = catRepository;
         }
 
-    
-
-        public Task<List<Cat>> Handle(GetAllCatsQuery request, CancellationToken cancellationToken)
+        public async Task<List<Cat>> Handle(GetAllCatsQuery request, CancellationToken cancellationToken)
         {
-            List<Cat> allCatsFromDatabase = Task.Run(() => _catRepository.GetAllCats(cancellationToken)).Result;
-
-            return Task.FromResult(allCatsFromDatabase);
+            List<Cat> allCatsFromMockDatabase = await _catRepository.GetAllCatsAsync();
+            return allCatsFromMockDatabase;
         }
     }
 }
-

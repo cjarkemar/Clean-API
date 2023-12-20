@@ -1,40 +1,37 @@
-﻿
+﻿using Application.Validators.Dog;
 using Domain.Models;
-using Infrastructure.Database;
+using Infrastructure.Repositories.Dogs;
 using MediatR;
-using Infrastructure.RepositoryPatternFiles.DogsPattern;
-using Application.Validators.Dogs;
-
 
 namespace Application.Commands.Dogs
 {
-    public sealed class AddDogCommandHandler : IRequestHandler<AddDogCommand, Dog>
+    public class AddDogCommandHandler : IRequestHandler<AddDogCommand, Dog>
     {
         private readonly IDogRepository _dogRepository;
         private readonly DogValidator _dogValidator;
 
-        public AddDogCommandHandler(IDogRepository dogRepository, DogValidator dogValidator)
+        public AddDogCommandHandler(IDogRepository dogRepository, DogValidator validator)
         {
             _dogRepository = dogRepository;
-
-            _dogValidator = dogValidator;
+            _dogValidator = validator;
         }
-
         public async Task<Dog> Handle(AddDogCommand request, CancellationToken cancellationToken)
         {
+
             Dog dogToCreate = new()
             {
-                Id = Guid.NewGuid(),
+                AnimalId = Guid.NewGuid(),
                 Name = request.NewDog.Name,
-                Barks = request.NewDog.Barks,
                 Breed = request.NewDog.Breed,
-                Weight = request.NewDog.Weight,
-                OwnerDogUsername = request.NewDog.OwnerDogUserName,
+                Weight = request.NewDog.Weight
             };
 
-            await _dogRepository.AddDog(dogToCreate, cancellationToken);
 
-            return dogToCreate;
+            var createdDog = await _dogRepository.AddDog(dogToCreate, request.Id);
+
+
+            return createdDog;
         }
+
     }
 }

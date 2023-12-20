@@ -26,20 +26,22 @@
 
   <ItemGroup>
     <None Remove="Migrations\" />
-    <None Remove="RepositoryPatternFiles\" />
-    <None Remove="RepositoryPatternFiles\DogsPattern\" />
-    <None Remove="RepositoryPatternFiles\CatsPattern\" />
-    <None Remove="RepositoryPatternFiles\UserPattern\" />
-    <None Remove="RepositoryPatternFiles\Authorization\" />
-    <None Remove="RepositoryPatternFiles\BirdsPattern\" />
+    <None Remove="Repositories\" />
+    <None Remove="Repositories\Animals\" />
+    <None Remove="Repositories\Cats\" />
+    <None Remove="Repositories\Dogs\" />
+    <None Remove="Repositories\Birds\" />
+    <None Remove="Repositories\Users\" />
+    <None Remove="Authentication\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="RepositoryPatternFiles\" />
-    <Folder Include="RepositoryPatternFiles\DogsPattern\" />
-    <Folder Include="RepositoryPatternFiles\CatsPattern\" />
-    <Folder Include="RepositoryPatternFiles\UserPattern\" />
-    <Folder Include="RepositoryPatternFiles\Authorization\" />
-    <Folder Include="RepositoryPatternFiles\BirdsPattern\" />
+    <Folder Include="Repositories\" />
+    <Folder Include="Repositories\Animals\" />
+    <Folder Include="Repositories\Cats\" />
+    <Folder Include="Repositories\Dogs\" />
+    <Folder Include="Repositories\Birds\" />
+    <Folder Include="Repositories\Users\" />
+    <Folder Include="Authentication\" />
   </ItemGroup>
 </Project>
