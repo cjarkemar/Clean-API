@@ -1,10 +1,9 @@
-﻿using Application.Commands.Dogs.DeleteDog;
+﻿using Application.Validators.Dog;
 using Domain.Models;
+using Infrastructure.Repositories.Dogs;
 using MediatR;
-using Infrastructure.RepositoryPatternFiles.DogsPattern;
-using Application.Validators.Dogs;
 
-namespace Application.Commands.Dogs
+namespace Application.Commands.Dogs.DeleteDog
 {
     public class DeleteDogByIdCommandHandler : IRequestHandler<DeleteDogByIdCommand, Dog>
     {
@@ -16,12 +15,22 @@ namespace Application.Commands.Dogs
             _dogRepository = dogRepository;
             _dogValidator = validator;
         }
-
         public async Task<Dog> Handle(DeleteDogByIdCommand request, CancellationToken cancellationToken)
         {
-            var dogToDelete = await _dogRepository.DeleteDogById(request.Id, cancellationToken);
+
+            Dog dogToDelete = await _dogRepository.GetDogById(request.Id);
+
+            if (dogToDelete == null)
+            {
+                return null!;
+            }
+
+            await _dogRepository.DeleteDogById(dogToDelete.AnimalId);
 
             return dogToDelete;
         }
     }
+
+
+
 }

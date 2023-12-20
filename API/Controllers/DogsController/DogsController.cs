@@ -4,12 +4,11 @@ using Application.Commands.Dogs.UpdateDog;
 using Application.Dtos;
 using Application.Queries.Dogs.GetAll;
 using Application.Queries.Dogs.GetById;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Application.Validators.Dogs;
 using Application.Validators;
-using Application.Queries.Dogs.GetDogByProperty;
+using Application.Validators.Dog;
+using Application.Validators.Dogs;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -17,7 +16,6 @@ namespace API.Controllers.DogsController
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class DogsController : ControllerBase
     {
         internal readonly IMediator _mediator;
@@ -32,61 +30,55 @@ namespace API.Controllers.DogsController
 
         // Get all dogs from database
         [HttpGet]
-        [Route("getAllDogs"), AllowAnonymous]
-
-        public async Task<IActionResult> GetAllDogs() // metod för att hämta alla hundar i Db 
+        [Route("getAllDogs")]
+        public async Task<IActionResult> GetAllDogs()
         {
-           
             try
             {
                 return Ok(await _mediator.Send(new GetAllDogsQuery()));
-                //return Ok("GET ALL DOGS");
-
             }
             catch (Exception ex)
             {
 
-                throw new Exception("Get All Dogs did not work successfully as planned, check code. Error: " + ex.Message, ex);
+                throw new Exception(ex.Message);
             }
-
         }
 
         // Get a dog by Id
-        [HttpGet] 
-        [Route("getDogById/{dogId}"), AllowAnonymous]  
-        public async Task<IActionResult> GetDogById(Guid dogId)  // metod för att hämta en hund baserat på dess ID.
+        [HttpGet]
+        [Route("getDogById/{dogId}")]
+        public async Task<IActionResult> GetDogById(Guid dogId)
         {
-            var guidValidator = _guidValidator.Validate(dogId);  // Validerar 'dogId' för att se så att deN är GUID.
+            var guidValidator = _guidValidator.Validate(dogId);
 
-            if (!guidValidator.IsValid)  //om valideringen misslyckas
+            if (!guidValidator.IsValid)
             {
-                // Om 'dogId' är ogiltigt, meddelande med varför det är ogiltigt.
                 return BadRequest(guidValidator.Errors.ConvertAll(errors => errors.ErrorMessage));
             }
 
-            var dog = await _mediator.Send(new GetDogByIdQuery(dogId));  //  MediatR för att skicka en förfrågan för att get the dauuwg.
+            var dog = await _mediator.Send(new GetDogByIdQuery(dogId));
 
-            if (dog == null)  // on hunden inte kunde hittas via id
+            if (dog == null)
             {
-                return NotFound();  // returnera då ett error 404
+                return NotFound();
             }
 
             try
             {
-                return Ok(dog);  // Om hunden finns returnera 200 respons (den finns).
+                return Ok(dog);
             }
-            catch (Exception ex)  // extra som fångar upp andra fel 
+            catch (Exception ex)
             {
-                
                 throw new Exception(ex.Message);
             }
         }
 
         // Create a new dog 
+        //[Authorize]
         [HttpPost]
-        [Route("addNewDog"), /*, Authorize(Roles = "Admin")*/]
+        [Route("addNewDog")]
         [ProducesResponseType(typeof(DogDto), StatusCodes.Status200OK)]
-        public async Task<IActionResult> AddDog([FromBody] DogDto newDog)
+        public async Task<IActionResult> AddDog([FromBody] DogDto newDog, Guid userId)
         {
             var dogValidator = _dogValidator.Validate(newDog);
 
@@ -97,7 +89,7 @@ namespace API.Controllers.DogsController
 
             try
             {
-                return Ok(await _mediator.Send(new AddDogCommand(newDog)));
+                return Ok(await _mediator.Send(new AddDogCommand(newDog, userId)));
             }
             catch (Exception ex)
             {
@@ -106,8 +98,9 @@ namespace API.Controllers.DogsController
         }
 
         // Update a specific dog
+        //[Authorize]
         [HttpPut]
-        [Route("updateDog/{updatedDogId}")/*, Authorize(Roles = "Admin")*/]
+        [Route("updateDog/{updateDogId}")]
         public async Task<IActionResult> UpdateDog([FromBody] DogDto dogToUpdate, Guid updateDogId)
         {
             var dogValidator = _dogValidator.Validate(dogToUpdate);
@@ -124,15 +117,14 @@ namespace API.Controllers.DogsController
                 return BadRequest(dogValidator.Errors.ConvertAll(errors => errors.ErrorMessage));
             }
 
-            var dog = await _mediator.Send(new UpdateDogByIdCommand(dogToUpdate, updateDogId));
-
-            if (dog == null)
-            {
-                return NotFound($"Dog with Id:{updateDogId} does not exist in database");
-            }
-
             try
             {
+                var dog = await _mediator.Send(new UpdateDogByIdCommand(dogToUpdate, updateDogId));
+
+                if (dog == null)
+                {
+                    return NotFound($"Dog with Id:{updateDogId} does not exist in database");
+                }
                 return Ok(dog);
             }
             catch (Exception ex)
@@ -142,6 +134,8 @@ namespace API.Controllers.DogsController
             }
         }
 
+        // Delete a specific dog
+        //[Authorize]
         [HttpDelete]
         [Route("deleteDog/{deleteDogId}")]
         public async Task<IActionResult> DeleteDog(Guid deleteDogId)
@@ -155,37 +149,15 @@ namespace API.Controllers.DogsController
 
             try
             {
-                var dog = await _mediator.Send(new DeleteDogByIdCommand(deleteDogId));
-                if (dog == null)
-                {
-                    return NotFound($"Dog with Id:{deleteDogId} does not exist in database");
-                }
+                await _mediator.Send(new DeleteDogByIdCommand(deleteDogId));
             }
             catch (Exception ex)
             {
+
                 throw new Exception(ex.Message);
             }
 
-            return NoContent(); 
+            return NoContent();
         }
-
-
-        [HttpGet]
-        [Route("getDogByProperty"), AllowAnonymous] //weight, breed, color
-        public async Task<IActionResult> GetDogByBreed([FromQuery] string? breed, [FromQuery] int? weight)
-        {
-            var wantedDogProperty = await _mediator.Send(new GetDogByPropertyQuery(breed!, weight));
-
-            if (wantedDogProperty.Count == 0)
-            {
-                ModelState.AddModelError("DogNotFound", $"No dogs found based on the specified criteria");
-                return BadRequest(ModelState);
-            }
-
-            return Ok(wantedDogProperty);
-        }
-
-
-
     }
 }

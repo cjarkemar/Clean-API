@@ -1,7 +1,7 @@
 ﻿using Application.Dtos;
 using FluentValidation;
 
-namespace Application.Validators.Dogs
+namespace Application.Validators.Dog
 {
     public class DogValidator : AbstractValidator<DogDto>
     {

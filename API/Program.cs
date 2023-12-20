@@ -1,34 +1,56 @@
+using API.Swagger;
 using Application;
 using Infrastructure;
-using API.Helpers;
+using Infrastructure.Database.RealDatabase;
+using Infrastructure.Database.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using API.Swagger;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using API.Authentication;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var secretKey = SecretKeyHelper.GetSecretKey(builder.Configuration);
+builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]!);
+// Add services to the container.
 
-builder.Services.CustomAuthentication(secretKey);
-
-builder.Services.AddAuthorization(options =>
+builder.Services.AddAuthentication(options =>
 {
-    options.AddPolicy("Admin", policy =>
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
-        policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
-        policy.RequireAuthenticatedUser();
-    });
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key)
+    };
 });
 
+builder.Services.AddAuthorization();
+
 builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, Configuration>();
-
+builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
 builder.Services.AddApplication().AddInfrastructure();
+
+
+var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
+builder.Services.AddDbContext<RealDatabase>(options =>
+{
+    // Use MySQL with the specified server version
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21))); // Replace with your MySQL version
+});
 
 var app = builder.Build();
 
@@ -41,6 +63,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

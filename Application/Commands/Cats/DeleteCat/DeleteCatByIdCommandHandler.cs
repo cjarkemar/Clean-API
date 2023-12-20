@@ -1,31 +1,24 @@
-﻿//using Domain.Models;
-//using Infrastructure.Database.RealDatabase;
-//using MediatR;
+﻿using Domain.Models;
+using Infrastructure.Repositories.Cats;
+using MediatR;
 
+namespace Application.Commands.Cats.DeleteCat
+{
+    public class DeleteCatByIdCommandHandler : IRequestHandler<DeleteCatByIdCommand, Cat>
+    {
+        private readonly ICatRepository _catRepository;
 
-//namespace Application.Commands.Cats
-//{
-//    public class DeleteCatByIdCommandHandler : IRequestHandler<DeleteCatByIdCommand, Cat>
-//    {
-//        private readonly RealDatabase _realDatabase;
+        public DeleteCatByIdCommandHandler(ICatRepository catRepository)
+        {
+            _catRepository = catRepository;
+        }
 
-//        public DeleteCatByIdCommandHandler(RealDatabase realDatabase)
-//        {
-//            _realDatabase = realDatabase;
-//        }
+        public async Task<Cat> Handle(DeleteCatByIdCommand request, CancellationToken cancellationToken)
+        {
 
-//        public Task<Cat> Handle(DeleteCatByIdCommand request, CancellationToken cancellationToken)
-//        {
-//            Cat catToDelete = _realDatabase.Cats.FirstOrDefault(cat => cat.Id == request.Id)!;
+            var deletedCat = await _catRepository.DeleteCatById(request.Id);
 
-//            if (catToDelete != null)
-//            {
-//                _realDatabase.Cats.Remove(catToDelete);
-//            }
-
-//            _realDatabase.SaveChangesAsync(cancellationToken);
-
-//            return Task.FromResult(catToDelete);
-//        }
-//    }
-//}
+            return deletedCat;
+        }
+    }
+}
