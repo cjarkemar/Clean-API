@@ -1,16 +1,16 @@
-﻿using Application.Dtos;
-using FluentValidation;
+﻿using FluentValidation;
 
-namespace Application.Validators.User
+namespace Application.Validators
 {
-    public class UserValidator : AbstractValidator<UserDto>
+
+    public class GuidValidator : AbstractValidator<Guid>
     {
-        public UserValidator()
+        public GuidValidator()
         {
-            RuleFor(user => user.UserName).NotEmpty().WithMessage("Username cant be empty")
-                .NotNull().WithMessage("Username cant be NULL");
-            RuleFor(user => user.Password).NotEmpty().WithMessage("Password cant be empty")
-                .NotNull().WithMessage("Password cant be NULL");
+            RuleFor(guid => guid).NotNull().WithMessage("Guid cant be NULL")
+                .NotEmpty().WithMessage("Guid cant be empty")
+                .NotEqual(Guid.Empty).WithMessage("Guid should not be empty");
         }
+
     }
 }

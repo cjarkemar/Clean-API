@@ -27,7 +27,7 @@
 //            _dogsData = new List<Dog>
 //            {
 //                new Dog { Id = Guid.NewGuid(), Name = "OldName"}
-                
+
 //            };
 
 //            var dogsDbSetMock = new Mock<DbSet<Dog>>();
@@ -61,7 +61,7 @@
 //            Assert.IsNotNull(result, "Updated dog should not be null.");
 //            Assert.That(result.Id, Is.EqualTo(dogId), "Updated dog's ID should match the requested ID.");
 //            Assert.That(result.Name, Is.EqualTo(updatedName), "Updated dog's name should reflect the new name.");
-            
+
 //        }
 
 //        [Test]

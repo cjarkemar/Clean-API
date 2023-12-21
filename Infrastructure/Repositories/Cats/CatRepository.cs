@@ -107,5 +107,30 @@ namespace Infrastructure.Repositories.Cats
                 throw new Exception($"An error occured while updating a cat by Id {updateCat.AnimalId} from database", ex);
             }
         }
+        public async Task<List<Cat>> GetCatsByWeightBreed(int? weight, string? breed)
+        {
+            try
+            {
+                var query = _realDatabase.Cats.OfType<Cat>();
+
+                if (weight.HasValue)
+                {
+                    query = query.Where(cat => cat.Weight >= weight.Value);
+                }
+
+                if (!string.IsNullOrEmpty(breed))
+                {
+                    query = query.Where(cat => cat.Breed == breed);
+                }
+
+                var cats = await query.OrderByDescending(cat => cat.Weight).ToListAsync();
+
+                return cats;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

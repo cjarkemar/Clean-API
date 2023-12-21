@@ -1,8 +1,8 @@
-﻿using Application.Queries.UsersGetToken;
+﻿
 using Infrastructure.Repositories.Users;
 using MediatR;
 
-namespace Application.Queries.Users.GetToken
+namespace Application.Queries.UsersGetToken
 {
     public class GetUserTokenQueryHandler : IRequestHandler<GetUserTokenQuery, string>
     {
@@ -16,7 +16,7 @@ namespace Application.Queries.Users.GetToken
         public async Task<string> Handle(GetUserTokenQuery request, CancellationToken cancellationToken)
         {
 
-            string token = await _userRepository.SignInUserByUsernameAndPassword(request.Username, request.Password);
+            string token = await _userRepository.SignInUser(request.Username, request.Password);
 
             if (token == null)
             {

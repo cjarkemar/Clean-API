@@ -26,7 +26,7 @@ namespace Test.BirdTests.QueryTest
             _birdsData = new List<Bird>
             {
                 new Bird { Id = new Guid("12345678-1234-5678-1234-567812345678") },
-                
+
             };
 
             var birdsDbSetMock = new Mock<DbSet<Bird>>();

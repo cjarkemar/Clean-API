@@ -2,7 +2,6 @@ using API.Swagger;
 using Application;
 using Infrastructure;
 using Infrastructure.Database.RealDatabase;
-using Infrastructure.Database.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -15,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]!);
-// Add services to the container.
+
 
 builder.Services.AddAuthentication(options =>
 {
@@ -43,14 +42,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
 builder.Services.AddApplication().AddInfrastructure();
-
-
-var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
-builder.Services.AddDbContext<RealDatabase>(options =>
-{
-    // Use MySQL with the specified server version
-    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21))); // Replace with your MySQL version
-});
 
 var app = builder.Build();
 

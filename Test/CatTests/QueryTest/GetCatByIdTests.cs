@@ -25,7 +25,7 @@
 //            _catsData = new List<Cat>
 //            {
 //                new Cat { Id = new Guid("12345678-1234-5678-1234-567812345678") },
-                
+
 //            };
 
 //            var catsDbSetMock = new Mock<DbSet<Cat>>();

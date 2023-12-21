@@ -9,14 +9,14 @@ namespace Application.Queries.Animals.GetAllAnimalsForUser
     public class GetAllAnimalsByIdQueryHandler : IRequestHandler<GetAllAnimalsByIdQuery, UserAnimalModel>
     {
         private readonly IDogRepository _dogRepository;
-        private readonly SqlDatabase _sqlDatabase;
+        private readonly RealDatabase _realDatabase;
 
         private readonly IAnimalRepository _animalRepository;
 
-        public GetAllAnimalsByIdQueryHandler(IDogRepository dogRepository, SqlDatabase sqlDatabase, IAnimalRepository animalRepository)
+        public GetAllAnimalsByIdQueryHandler(IDogRepository dogRepository, RealDatabase realDatabase, IAnimalRepository animalRepository)
         {
             _dogRepository = dogRepository;
-            _sqlDatabase = sqlDatabase;
+            _realDatabase = realDatabase;
             _animalRepository = animalRepository;
         }
         public async Task<UserAnimalModel> Handle(GetAllAnimalsByIdQuery request, CancellationToken cancellationToken)
