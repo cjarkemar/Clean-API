@@ -4,9 +4,9 @@ using Application.Commands.Birds.UpdateBird;
 using Application.Dtos;
 using Application.Queries.Birds.GetAll;
 using Application.Queries.Birds.GetById;
+using Application.Queries.Birds.GetColor;
 using Application.Validators;
 using Application.Validators.Bird;
-using Application.Validators.Birds;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -66,6 +66,13 @@ namespace API.Controllers.BirdsController
             }
         }
 
+        [HttpGet]
+        [Route("getAllBirdsWithColor/{birdColor}")]
+        public async Task<IActionResult> GetBirdByColor(string birdColor)
+        {
+            return Ok(await _mediator.Send(new GetAllBirdsWithColorQuery { Color = birdColor }));
+        }
+
         //[Authorize]
         [HttpPost]
         [Route("addNewBird")]
@@ -92,7 +99,7 @@ namespace API.Controllers.BirdsController
         //[Authorize]
         [HttpPut]
         [Route("updateBird/{updateBirdId}")]
-        public async Task<IActionResult> UpdateBirdById([FromBody] BirdDto birdToUpdate, Guid updateBirdId)
+        public async Task<IActionResult> UpdateBird([FromBody] BirdDto birdToUpdate, Guid updateBirdId)
         {
             var guidValidator = _guidValidator.Validate(updateBirdId);
 

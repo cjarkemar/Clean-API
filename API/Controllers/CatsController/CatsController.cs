@@ -7,7 +7,6 @@ using Application.Queries.Cats.GetAll;
 using Application.Queries.Cats.GetById;
 using Application.Validators;
 using Application.Validators.Cat;
-using Application.Validators.Cats;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

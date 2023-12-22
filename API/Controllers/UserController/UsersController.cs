@@ -1,14 +1,12 @@
-﻿using Application.Commands.Users.AddUser;
+﻿using Application.Commands.Users.Register;
 using Application.Commands.Users.DeleteUser;
-using Application.Commands.Users.DeleteUsers;
-using Application.Commands.Users.UpdateUser;
 using Application.Commands.Users.UpdateUsers;
 using Application.Dtos;
-using Application.Queries.Users.GetToken;
 using Application.Validators;
-using Application.Validators.User;
+using Application.Validators.Users;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Application.Queries.UsersGetToken;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -48,23 +46,30 @@ namespace API.Controllers.UsersController
         [Route("Register")]
         public async Task<IActionResult> RegisterUser(string username, string password)
         {
-            //var userValidator = _userValidator.Validate(username);
-            /*
-            if (!userValidator.IsValid)
+            var userDto = new UserDto
             {
-                return BadRequest(userValidator.Errors.ConvertAll(errors => errors.ErrorMessage));
+                UserName = username,
+                Password = password,
+                Role = "Default",
+                Authorized = true
+            };
+
+            var validationResult = _userValidator.Validate(userDto);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors.ConvertAll(errors => errors.ErrorMessage));
             }
-            */
+
             try
             {
                 return Ok(await _mediator.Send(new AddUserCommand(username, password)));
             }
             catch (Exception ex)
             {
-
                 throw new Exception(ex.Message);
             }
         }
+
         [HttpDelete]
         [Route("deleteUser/{deleteUserId}")]
         public async Task<IActionResult> DeleteUser(Guid deleteUserId)

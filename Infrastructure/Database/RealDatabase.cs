@@ -11,6 +11,8 @@ namespace Infrastructure.Database.RealDatabase
     {
         private readonly IConfiguration _configuration;
 
+        public RealDatabase() { }
+
         public RealDatabase(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -24,19 +26,24 @@ namespace Infrastructure.Database.RealDatabase
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySql( _configuration.GetConnectionString("DatabaseConnection"),
-             new MySqlServerVersion(new Version(8, 2, 0)));
+            //connectionString to Db
+            string connectionString = "Server=localhost;Port=3306;Database=RealDB;User=root;Password=arkemar321;";
 
+            optionsBuilder.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 35)));
         }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-           
+
             modelBuilder.Entity<UserAnimalJointTable>().ToTable(nameof(UserAnimalJointTable));
 
-           
-            
+
+
+
         }
+
+
 
     }
 }

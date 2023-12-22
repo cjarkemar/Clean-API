@@ -1,4 +1,5 @@
 ﻿using API.Controllers.BirdsController;
+using Application.Dtos;
 using Application.Validators;
 using Application.Validators.Bird;
 using MediatR;
@@ -7,10 +8,10 @@ using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
 
-namespace Test.BirdTests.QueryTest
+namespace Test.BirdTests.CommandTest
 {
     [TestFixture]
-    public class GetBirdByIdTests
+    public class UpdateBirdTests
     {
         private BirdsController _controller;
         private Mock<IMediator> _mediatorMock;
@@ -27,16 +28,18 @@ namespace Test.BirdTests.QueryTest
         }
 
         [Test]
-        public async Task Controller_Get_Bird_By_Id()
+        public async Task Controller_Update_Correct_Bird_By_Id()
         {
             // Arrange
-            var birdId = new Guid("33355658-1434-5628-9214-567814345603");
+            var birdId = new Guid("12345678-1234-5678-1234-567812345678");
+            var birdName = "ElonMusk";
+            var dto = new BirdDto { Name = birdName };
 
             // Act
-            var result = await _controller.GetBirdById(birdId);
+            var result = await _controller.UpdateBird(dto, birdId);
 
             // Assert
-            Assert.NotNull(result);
+            Assert.That(result, Is.Not.Null);
 
 
         }

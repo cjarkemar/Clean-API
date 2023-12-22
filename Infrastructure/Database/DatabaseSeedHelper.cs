@@ -30,8 +30,8 @@
 //            modelBuilder.Entity<Cat>().HasData(
 //                new Cat { Id = Guid.NewGuid(), Name = "Garfield", LikesToPlay = true , Breed = "Bergskatt", Weight = 3},
 //                new Cat { Id = Guid.NewGuid(), Name = "HorseCatDude", LikesToPlay = false , Breed = "Bergskatt", Weight = 3 }
-                
-                
+
+
 //            );
 
 //            modelBuilder.Entity<Bird>().HasData(
@@ -39,11 +39,11 @@
 //               new Bird { Id = Guid.NewGuid(), Name = "Allanballan", CanFly = false, Color = "Yellow" },
 //               new Bird { Id = Guid.NewGuid(), Name = "Kalle", CanFly = false, Color = "Black" },
 //               new Bird { Id = Guid.NewGuid(), Name = "Cherry", CanFly = true, Color = "Purple" }
-              
-//           );
-               
 
-         
+//           );
+
+
+
 
 
 
