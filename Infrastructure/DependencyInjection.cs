@@ -19,6 +19,7 @@ namespace Infrastructure
         {
             // Other service registrations
             services.AddSingleton<MockDatabase>();
+            services.AddSingleton<JwtTokenGenerator>();
             services.AddScoped<IDogRepository, DogRepository>();
             services.AddScoped<IBirdRepository, BirdRepository>();
             services.AddScoped<ICatRepository, CatRepository>();

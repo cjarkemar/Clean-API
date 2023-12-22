@@ -1,4 +1,5 @@
 ﻿using API.Controllers.DogsController;
+using Application.Dtos;
 using Application.Validators;
 using Application.Validators.Dog;
 using MediatR;
@@ -7,10 +8,10 @@ using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
 
-namespace Test.DogTests.QueryTest
+namespace Test.DogTests.CommandTest
 {
     [TestFixture]
-    public class GetDogByIdTests
+    public class UpdateDogTests
     {
         private DogsController _controller;
         private Mock<IMediator> _mediatorMock;
@@ -27,13 +28,15 @@ namespace Test.DogTests.QueryTest
         }
 
         [Test]
-        public async Task Controller_Get_Dog_By_Id()
+        public async Task Controller_Update_Correct_Dog_By_Id()
         {
             // Arrange
-            var dogId = new Guid("523a0c2b-6b9b-4239-a691-495a6c5778c6");
+            var dogId = new Guid("12345678-1234-5678-1234-567812345678");
+            var dogName = "Dino";
+            var dto = new DogDto { Name = dogName };
 
             // Act
-            var result = await _controller.GetDogById(dogId);
+            var result = await _controller.UpdateDog(dto, dogId);
 
             // Assert
             Assert.That(result, Is.Not.Null);

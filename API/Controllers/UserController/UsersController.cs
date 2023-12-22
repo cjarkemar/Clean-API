@@ -46,23 +46,30 @@ namespace API.Controllers.UsersController
         [Route("Register")]
         public async Task<IActionResult> RegisterUser(string username, string password)
         {
-            //var userValidator = _userValidator.Validate(username);
-            /*
-            if (!userValidator.IsValid)
+            var userDto = new UserDto
             {
-                return BadRequest(userValidator.Errors.ConvertAll(errors => errors.ErrorMessage));
+                UserName = username,
+                Password = password,
+                Role = "Default",
+                Authorized = true
+            };
+
+            var validationResult = _userValidator.Validate(userDto);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors.ConvertAll(errors => errors.ErrorMessage));
             }
-            */
+
             try
             {
                 return Ok(await _mediator.Send(new AddUserCommand(username, password)));
             }
             catch (Exception ex)
             {
-
                 throw new Exception(ex.Message);
             }
         }
+
         [HttpDelete]
         [Route("deleteUser/{deleteUserId}")]
         public async Task<IActionResult> DeleteUser(Guid deleteUserId)

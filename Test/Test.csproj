@@ -21,6 +21,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\API\API.csproj" />
+    <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,11 +30,17 @@
     <None Remove="BirdTests\" />
     <None Remove="BirdTests\CommandTest\" />
     <None Remove="BirdTests\QueryTest\" />
+    <None Remove="UserTests\" />
+    <None Remove="UserTests\CommandTest\" />
+    <None Remove="UserTests\QueryTest\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="CatTests\" />
     <Folder Include="BirdTests\" />
     <Folder Include="BirdTests\CommandTest\" />
     <Folder Include="BirdTests\QueryTest\" />
+    <Folder Include="UserTests\" />
+    <Folder Include="UserTests\CommandTest\" />
+    <Folder Include="UserTests\QueryTest\" />
   </ItemGroup>
 </Project>

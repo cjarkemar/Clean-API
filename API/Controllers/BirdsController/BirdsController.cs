@@ -99,7 +99,7 @@ namespace API.Controllers.BirdsController
         //[Authorize]
         [HttpPut]
         [Route("updateBird/{updateBirdId}")]
-        public async Task<IActionResult> UpdateBirdById([FromBody] BirdDto birdToUpdate, Guid updateBirdId)
+        public async Task<IActionResult> UpdateBird([FromBody] BirdDto birdToUpdate, Guid updateBirdId)
         {
             var guidValidator = _guidValidator.Validate(updateBirdId);
 
