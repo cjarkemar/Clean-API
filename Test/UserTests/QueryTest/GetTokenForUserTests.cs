@@ -1,40 +1,35 @@
-﻿//using Application.Queries.UsersGetToken;
-//using Infrastructure.Authentication;
-//using Infrastructure.Database;
+﻿
+//using Application.Queries.UsersGetToken;
 //using Moq;
-//using NUnit.Framework;
-//using System;
-//using System.Threading;
-//using System.Threading.Tasks;
+//using Infrastructure.Authentication;
+//using Microsoft.EntityFrameworkCore.Storage;
+//using Infrastructure.Database.RealDatabase;
 
 //namespace Test.UserTests.QueryTest
 //{
 //    [TestFixture]
-//    public class GetTokenForUser
+//    public class GetTokenForUserTests
 //    {
 //        private GetUserTokenQueryHandler _handler;
-//        private Mock<IMockDatabase> _mockDatabaseMock;
+//        private Mock<RealDatabase> _mockDatabase;
 //        private JwtTokenGenerator _jwtGenerator;
-
 //        [SetUp]
 //        public void SetUp()
 //        {
-//            _mockDatabaseMock = new Mock<IMockDatabase>();
+//            _mockDatabase = new Mock<RealDatabase>();
 //            _jwtGenerator = new JwtTokenGenerator();
-//            _handler = new GetUserTokenQueryHandler(_mockDatabaseMock.Object, _jwtGenerator);
+//            _handler = new GetUserTokenQueryHandler(_mockDatabase.Object, (Infrastructure.Repositories.Users.IUserRepository)_jwtGenerator);
 //        }
 
 //        [Test]
 //        public async Task Handle_Generate_Token_For_Valid_User()
 //        {
 //            // Arrange
-//            var username = "CarlJohan";
-//            var password = "123Lösen";
-//            var query = new GetUserTokenQuery(username, password);
+//            var username = "AnvädareFårToken";
+//            var password = "lösen321";
+//            _mockDatabase.Setup(x => x.IsValidUser(username, password)).Returns(true);
 
-//            // Mocking the expected behavior of the database
-//            _mockDatabaseMock.Setup(db => db.ValidateUser(username, password))
-//                             .Returns(true); // Assuming ValidateUser returns a boolean
+//            var query = new GetUserTokenQuery(username, password);
 
 //            // Act
 //            var result = await _handler.Handle(query, CancellationToken.None);
@@ -47,13 +42,11 @@
 //        public async Task Handle_Invalid_User()
 //        {
 //            // Arrange
-//            var username = "NotOKCarlJohan";
-//            var password = "NotOK123Lösen";
-//            var query = new GetUserTokenQuery(username, password);
+//            var username = "CJ";
+//            var password = "lösen321";
+//            _mockDatabase.Setup(x => x.IsValidUser(username, password)).Returns(false);
 
-//            // Mocking the expected behavior of the database
-//            _mockDatabaseMock.Setup(db => db.ValidateUser(username, password))
-//                             .Returns(false); // Assuming ValidateUser returns a boolean
+//            var query = new GetUserTokenQuery(username, password);
 
 //            // Act
 //            var result = await _handler.Handle(query, CancellationToken.None);

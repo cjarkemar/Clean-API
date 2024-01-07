@@ -22,7 +22,7 @@ namespace Infrastructure.Repositories.Birds
 
                 if (user == null)
                 {
-                    throw new Exception("User not found");
+                    throw new Exception("Bird not found");
                 }
 
                 var userAnimal = new UserAnimalJointTable { AnimalId = newBird.AnimalId, UserId = id };

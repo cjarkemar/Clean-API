@@ -5,8 +5,11 @@
         public required string UserName { get; set; }
         public required string Password { get; set; }
 
-        public required string Role { get; set; }
+
+        //Är detta korrekt? Kontrollera
         public required bool Authorized { get; set; }
+        public required string Role { get; set; }
+
 
     }
 }

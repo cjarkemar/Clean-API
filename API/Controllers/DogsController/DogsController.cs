@@ -4,6 +4,7 @@ using Application.Commands.Dogs.UpdateDog;
 using Application.Dtos;
 using Application.Queries.Dogs.GetAll;
 using Application.Queries.Dogs.GetById;
+using Application.Queries.Dogs.GetWeightAndBreed;
 using Application.Validators;
 using Application.Validators.Dog;
 using MediatR;
@@ -158,6 +159,13 @@ namespace API.Controllers.DogsController
             }
 
             return NoContent();
+        }
+
+        [HttpGet]
+        [Route("getDogsByWeightOrBreed")]
+        public async Task<IActionResult> GetAllDogsByWeight(int? weight, string? breed)
+        {
+            return Ok(await _mediator.Send(new GetDogsByWeightOrBreedQuery { Weight = weight, Breed = breed }));
         }
     }
 }

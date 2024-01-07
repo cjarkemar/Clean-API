@@ -8,7 +8,7 @@ namespace Application.Queries.UsersGetToken
     {
         private readonly IUserRepository _userRepository;
 
-        public GetUserTokenQueryHandler(IUserRepository userRepository)
+        public GetUserTokenQueryHandler(Infrastructure.Database.RealDatabase.RealDatabase @object, IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }

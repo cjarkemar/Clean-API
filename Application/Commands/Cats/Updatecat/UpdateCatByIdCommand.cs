@@ -11,13 +11,16 @@ namespace Application.Commands.Cats.UpdateCat
 {
     public class UpdateCatByIdCommand : IRequest<Cat>
     {
+
+        public CatDto CatToUpdate { get; }
+        public Guid Id { get; }
+
         public UpdateCatByIdCommand(CatDto catToUpdate, Guid id)
         {
             CatToUpdate = catToUpdate;
             Id = id;
         }
 
-        public CatDto CatToUpdate { get; }
-        public Guid Id { get; }
+
     }
 }

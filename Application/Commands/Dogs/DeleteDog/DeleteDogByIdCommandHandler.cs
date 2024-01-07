@@ -8,12 +8,12 @@ namespace Application.Commands.Dogs.DeleteDog
     public class DeleteDogByIdCommandHandler : IRequestHandler<DeleteDogByIdCommand, Dog>
     {
         private readonly IDogRepository _dogRepository;
-        private readonly DogValidator _dogValidator;
 
-        public DeleteDogByIdCommandHandler(IDogRepository dogRepository, DogValidator validator)
+
+        public DeleteDogByIdCommandHandler(IDogRepository dogRepository)
         {
             _dogRepository = dogRepository;
-            _dogValidator = validator;
+
         }
         public async Task<Dog> Handle(DeleteDogByIdCommand request, CancellationToken cancellationToken)
         {

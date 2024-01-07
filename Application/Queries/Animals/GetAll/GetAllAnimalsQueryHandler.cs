@@ -1,10 +1,11 @@
 ﻿using Domain.Models.Animal;
+using Domain.Models.UserAnimal;
 using Infrastructure.Repositories.Animals;
 using MediatR;
 
 namespace Application.Queries.Animals.GetAll
 {
-    public class GetAllAnimalsQueryHandler : IRequestHandler<GetAllAnimalsQuery, List<AnimalModel>>
+    public class GetAllAnimalsQueryHandler : IRequestHandler<GetAllAnimalsQuery, List<AnimalUserModel>>
     {
         private readonly IAnimalRepository _animalRepository;
 
@@ -13,9 +14,9 @@ namespace Application.Queries.Animals.GetAll
             _animalRepository = animalRepository;
         }
 
-        public async Task<List<AnimalModel>> Handle(GetAllAnimalsQuery request, CancellationToken cancellationToken)
+        public async Task<List<AnimalUserModel>> Handle(GetAllAnimalsQuery request, CancellationToken cancellationToken)
         {
-            List<AnimalModel> allAnimals = await _animalRepository.GetAllAnimals();
+            List<AnimalUserModel> allAnimals = await _animalRepository.GetAllAnimals();
 
             return allAnimals;
         }

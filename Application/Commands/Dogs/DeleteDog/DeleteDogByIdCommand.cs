@@ -6,11 +6,13 @@ namespace Application.Commands.Dogs.DeleteDog
 
     public class DeleteDogByIdCommand : IRequest<Dog>
     {
+        public Guid Id { get; }
+
         public DeleteDogByIdCommand(Guid id)
         {
             Id = id;
         }
-        public Guid Id { get; }
+
 
     }
 
