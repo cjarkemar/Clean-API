@@ -31,7 +31,7 @@ namespace Test.BirdTests.QueryTest
             _controller = new BirdsController(_mediator, _birdValidator, _guidValidator);
         }
 
-       
+
 
         [Test]
         public async Task Handle_ValidId_ReturnCorrectBird()
