@@ -16,11 +16,14 @@ namespace Application.Commands.Birds.AddBird
         public async Task<Bird> Handle(AddBirdCommand request, CancellationToken cancellationToken)
         {
             Bird birdToCreate = new()
+
             {
+                Color = request.NewBird.Color,
                 AnimalId = Guid.NewGuid(),
-                Name = request.NewBird.Name,
                 CanFly = request.NewBird.CanFly,
-                Color = request.NewBird.Color
+                Name = request.NewBird.Name
+
+
 
             };
 

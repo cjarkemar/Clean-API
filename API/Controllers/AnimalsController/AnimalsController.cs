@@ -1,4 +1,6 @@
-﻿using Application.Queries.Animals.GetAll;
+﻿using Application.Commands.AnimalUser.AddAnimalToUser;
+using Application.Commands.AnimalUser.DeleteAnimalToUser;
+using Application.Queries.Animals.GetAll;
 using Application.Queries.Animals.GetAllAnimalsForUser;
 using Application.Validators;
 using MediatR;
@@ -23,7 +25,15 @@ namespace API.Controllers.AnimalsController
         [Route("getAllAnimals")]
         public async Task<IActionResult> GetAllAnimals()
         {
-            return Ok(await _mediator.Send(new GetAllAnimalsQuery()));
+            try
+            {
+                return Ok(await _mediator.Send(new GetAllAnimalsQuery()));
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("An error occured while getting all animals from the database", ex);
+            }
         }
 
         [HttpGet]
@@ -33,6 +43,64 @@ namespace API.Controllers.AnimalsController
             var animals = await _mediator.Send(new GetAllAnimalsByIdQuery(userId));
 
             return Ok(animals);
+        }
+
+        [HttpPost]
+        [Route("ConnectAnimalToUser")]
+        public async Task<IActionResult> JoinAnimal(Guid userId, Guid animalId)
+        {
+            try
+            {
+                var userGuid = _guidValidator.Validate(userId);
+
+
+                var animalguid = _guidValidator.Validate(animalId);
+
+                if (!userGuid.IsValid || !animalguid.IsValid)
+                {
+                    return BadRequest();
+                }
+
+                var connection = await _mediator.Send(new AddAnimalToUserCommand(userId, animalId));
+
+                return Ok(connection);
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception($"An error occured while connection userId {userId} with animalId {animalId}", ex);
+            }
+
+
+
+        }
+        [HttpDelete]
+        [Route("RemoveConnectionBetweenAnimalAndUser")]
+        public async Task<IActionResult> DeleteJoinedAnimal(Guid userId, Guid animalId)
+        {
+            try
+            {
+                var userGuid = _guidValidator.Validate(userId);
+
+                var animalGuid = _guidValidator.Validate(animalId);
+
+                if (!animalGuid.IsValid || !animalGuid.IsValid)
+                {
+                    return BadRequest();
+                }
+
+                await _mediator.Send(new DeleteAnimalToUserCommand(userId, animalId));
+
+                return NoContent();
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+
         }
     }
 }

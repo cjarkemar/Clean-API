@@ -1,9 +1,11 @@
-﻿using Domain.Models;
+﻿using System.Reflection.Emit;
+using Domain.Models;
 using Domain.Models.Account;
 using Domain.Models.Animal;
 using Domain.Models.UserAnimal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Moq;
 
 namespace Infrastructure.Database.RealDatabase
 {
@@ -33,17 +35,23 @@ namespace Infrastructure.Database.RealDatabase
         }
 
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
 
-            modelBuilder.Entity<UserAnimalJointTable>().ToTable(nameof(UserAnimalJointTable));
+        //{
+        //    ModuleBuilder.Entity<UserAnimalJointTable>().ToTable(nameof(UserAnimalJointTable));
+        //}
 
 
 
 
-        }
+
+
+
 
 
 
     }
+
+
+
 }

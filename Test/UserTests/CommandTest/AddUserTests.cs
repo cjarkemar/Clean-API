@@ -1,41 +1,49 @@
-﻿//using API.Controllers.UsersController;
-//using Application.Commands.Users.Register;
-//using Application.Dtos;
-//using Application.Validators;
-//using Application.Validators.Users;
-//using Domain.Models;
-//using MediatR;
-//using Microsoft.AspNetCore.Mvc;
-//using Moq;
+﻿
+using Application.Commands.Users.Register;
+using Application.Dtos;
+using Domain.Models;
+using Infrastructure.Repositories.Users;
+using Moq;
+using NUnit.Framework;
+using System.Threading;
+using System.Threading.Tasks;
 
-//public class UsersControllerTests
-//{
-//    private Mock<IMediator> _mediatorMock;
-//    private Mock<UserValidator> _userValidatorMock;
-//    private Mock<GuidValidator> _guidValidatorMock;
-//    private UsersController _controller;
+namespace Test.UserTests.CommandTest
+{
+    [TestFixture]
+    public class AddUserTests
+    {
+        [Test]
+        public async Task Handle_Add_User()
+        {
+            //Arrange
+            var username = "TestaAnvändare";
+            var password = "lösen";
+            var role = "admin";
 
-//    [SetUp]
-//    public void SetUp()
-//    {
-//        _mediatorMock = new Mock<IMediator>();
-//        _userValidatorMock = new Mock<UserValidator>();
-//        _guidValidatorMock = new Mock<GuidValidator>();
-//        _controller = new UsersController(_mediatorMock.Object, _userValidatorMock.Object, _guidValidatorMock.Object);
-//    }
+            var dto = new UserDto
+            {
+                UserName = username,
+                Password = password,
+                Role = role,
+                Authorized = true
+            };
 
-//    [Test]
-//    public async Task RegisterUser_ShouldReturnOkResultForValidUser()
-//    {
-//        var username = "newUser";
-//        var password = "newPassword";
-//        _mediatorMock.Setup(m => m.Send(It.IsAny<AddUserCommand>(), default)).ReturnsAsync(new User());
-//        _userValidatorMock.Setup(v => v.Validate(It.IsAny<UserDto>())).Returns(new ValidationResult());
+            var user = new User { Authorized = true, Password = password, Username = username };
 
-//        var result = await _controller.RegisterUser(username, password) as OkObjectResult;
+            var userRepositoryMock = new Mock<IUserRepository>();
+            userRepositoryMock.Setup(x => x.AddUser(It.IsAny<User>())).ReturnsAsync(user);
 
-//        Assert.IsNotNull(result);
-//        Assert.AreEqual(200, result.StatusCode);
-//    }
+            var handler = new AddUserCommandHandler(userRepositoryMock.Object);
+            var command = new AddUserCommand(username, password);
 
-//}
+            //Act
+            var result = await handler.Handle(command, CancellationToken.None);
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.That(result.Username.Equals(username));
+            Assert.That(result, Is.TypeOf<User>());
+        }
+    }
+}

@@ -1,11 +1,16 @@
 ﻿using API.Controllers.BirdsController;
+using Application.Commands.Birds.UpdateBird;
 using Application.Dtos;
 using Application.Validators;
 using Application.Validators.Bird;
+using Domain.Models;
+using Infrastructure.Repositories.Birds;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Test.BirdTests.CommandTest
@@ -13,35 +18,31 @@ namespace Test.BirdTests.CommandTest
     [TestFixture]
     public class UpdateBirdTests
     {
-        private BirdsController _controller;
-        private Mock<IMediator> _mediatorMock;
-        private GuidValidator _guidValidator;
-        private BirdValidator _birdValidator;
 
-        [SetUp]
-        public void SetUp()
-        {
-            _mediatorMock = new Mock<IMediator>();
-            _guidValidator = new GuidValidator();
-            _birdValidator = new BirdValidator();
-            _controller = new BirdsController(_mediatorMock.Object, _birdValidator, _guidValidator);
-        }
 
         [Test]
-        public async Task Controller_Update_Correct_Bird_By_Id()
+        public async Task Handle_Update_Correct_Bird_By_Id()
         {
             // Arrange
-            var birdId = new Guid("12345678-1234-5678-1234-567812345678");
-            var birdName = "ElonMusk";
-            var dto = new BirdDto { Name = birdName };
+            var guid = Guid.NewGuid();
+            var bird = new Bird { AnimalId = guid, Color = "Green", Name = "Test", CanFly = true };
+            var birdDto = new BirdDto { Name = "Frans", CanFly = true, Color = "Green" }; // Update color here
+
+            var birdRepositoryMock = new Mock<IBirdRepository>();
+            birdRepositoryMock.Setup(x => x.GetBirdById(guid)).ReturnsAsync(bird);
+            birdRepositoryMock.Setup(x => x.UpdateBird(It.IsAny<Bird>())).ReturnsAsync(bird);
+
+            var handler = new UpdateBirdByIdCommandHandler(birdRepositoryMock.Object);
+            var command = new UpdateBirdByIdCommand(birdDto, guid);
 
             // Act
-            var result = await _controller.UpdateBird(dto, birdId);
+            var result = await handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.That(result, Is.Not.Null);
-
-
+            Assert.IsNotNull(result);
+            Assert.That(result.Name, Is.EqualTo("Frans"));
+            Assert.IsTrue(result.CanFly);
+            Assert.IsInstanceOf<Bird>(result);
         }
     }
 }

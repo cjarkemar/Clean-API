@@ -1,10 +1,15 @@
 ﻿using API.Controllers.BirdsController;
+using Application.Queries.Birds.GetById;
 using Application.Validators;
 using Application.Validators.Bird;
+using Domain.Models;
+using Infrastructure.Repositories.Birds;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Test.BirdTests.QueryTest
@@ -13,32 +18,40 @@ namespace Test.BirdTests.QueryTest
     public class GetBirdByIdTests
     {
         private BirdsController _controller;
-        private Mock<IMediator> _mediatorMock;
+        private IMediator _mediator;
         private GuidValidator _guidValidator;
         private BirdValidator _birdValidator;
 
         [SetUp]
         public void SetUp()
         {
-            _mediatorMock = new Mock<IMediator>();
+            _mediator = new Mock<IMediator>().Object;
             _guidValidator = new GuidValidator();
             _birdValidator = new BirdValidator();
-            _controller = new BirdsController(_mediatorMock.Object, _birdValidator, _guidValidator);
+            _controller = new BirdsController(_mediator, _birdValidator, _guidValidator);
         }
 
+       
+
         [Test]
-        public async Task Controller_Get_Bird_By_Id()
+        public async Task Handle_ValidId_ReturnCorrectBird()
         {
-            // Arrange
-            var birdId = new Guid("33355658-1434-5628-9214-567814345603");
+            var guid = Guid.NewGuid();
+            var bird = new Bird { Name = "McNugget", Color = "Yellow" };
 
-            // Act
-            var result = await _controller.GetBirdById(birdId);
+            var birdRepositoryMock = new Mock<IBirdRepository>();
+            birdRepositoryMock.Setup(x => x.GetBirdById(It.IsAny<Guid>())).ReturnsAsync(bird);
 
-            // Assert
-            Assert.NotNull(result);
+            var handler = new GetBirdByIdQueryHandler(birdRepositoryMock.Object);
+            var command = new GetBirdByIdQuery(guid);
 
+            //Act
+            var result = await handler.Handle(command, CancellationToken.None);
 
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.That(result, Is.TypeOf<Bird>());
+            Assert.That(result.Name.Equals("McNugget"));
         }
     }
 }
