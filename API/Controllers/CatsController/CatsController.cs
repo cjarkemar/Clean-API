@@ -1,24 +1,31 @@
 ﻿using Application.Commands.Cats;
+using Application.Commands.Cats.AddCat;
+using Application.Commands.Cats.DeleteCat;
+using Application.Commands.Cats.UpdateCat;
 using Application.Dtos;
 using Application.Queries.Cats.GetAll;
 using Application.Queries.Cats.GetById;
+using Application.Queries.Cats.GetWeight;
+using Application.Validators;
+using Application.Validators.Cat;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-
-namespace API.Controllers
+namespace API.Controllers.CatsController
 {
-    [Route("api/[controller]")]
+    [Route("/[controller]")]
     [ApiController]
-    [Authorize]
-    public class CatsController : ControllerBase
+    public class CatsController : Controller
     {
-        private readonly IMediator _mediator;
-
-        public CatsController(IMediator mediator)
+        internal readonly IMediator _mediator;
+        internal readonly CatValidator _catValidator;
+        internal readonly GuidValidator _guidValidator;
+        public CatsController(IMediator mediator, CatValidator catValidator, GuidValidator guidValidator)
         {
             _mediator = mediator;
+            _catValidator = catValidator;
+            _guidValidator = guidValidator;
         }
 
         // Get all cats from database
@@ -34,46 +41,90 @@ namespace API.Controllers
         [Route("getCatById/{catId}")]
         public async Task<IActionResult> GetCatById(Guid catId)
         {
-            var result = await _mediator.Send(new GetCatByIdQuery(catId));
-            if (result == null)
+            var guidValidator = _guidValidator.Validate(catId);
+
+            if (!guidValidator.IsValid)
             {
-                return NotFound("Katten finns inte med i listan");
+                return BadRequest(guidValidator.Errors.ConvertAll(errors => errors.ErrorMessage));
             }
-            return Ok(result);
+
+            var cat = await _mediator.Send(new GetCatByIdQuery(catId));
+
+            if (cat == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(cat);
         }
 
-        // Create a new cat
+        //[Authorize]
         [HttpPost]
         [Route("addNewCat")]
-        public async Task<IActionResult> AddCat([FromBody] CatDto newCat)
+        public async Task<IActionResult> AddCat([FromBody] CatDto newCat, Guid userId)
         {
-            return Ok(await _mediator.Send(new AddCatCommand(newCat)));
-        }
+            var catValidate = _catValidator.Validate(newCat);
 
-        // Update a specific cat
-        [HttpPut]
-        [Route("updateCat/{updatedCatId}")]
-        public async Task<IActionResult> UpdateCat([FromBody] CatDto updatedCat, Guid updatedCatId)
-        {
-            var updateResult = await _mediator.Send(new UpdateCatByIdCommand(updatedCat, updatedCatId));
-            if (updateResult == null)
+            if (!catValidate.IsValid)
             {
-                return NotFound("Katten finns inte med i listan");
+                return BadRequest(catValidate.Errors.ConvertAll(errors => errors.ErrorMessage));
             }
-            return Ok(updateResult);
+
+            return Ok(await _mediator.Send(new AddCatCommand(newCat, userId)));
         }
 
-        // Delete a specific cat
+        [Authorize]
+        [HttpPut]
+        [Route("updateCat/{updateCatId}")]
+        public async Task<IActionResult> UpdateCatById([FromBody] CatDto catToUpdate, Guid updateCatId)
+        {
+            var guidValidator = _guidValidator.Validate(updateCatId);
+
+            if (!guidValidator.IsValid)
+            {
+                return BadRequest(guidValidator.Errors.ConvertAll(errors => errors.ErrorMessage));
+            }
+
+            var catValidate = _catValidator.Validate(catToUpdate);
+
+            if (!catValidate.IsValid)
+            {
+                return BadRequest(catValidate.Errors.ConvertAll(errors => errors.ErrorMessage));
+            }
+
+            var cat = await _mediator.Send(new UpdateCatByIdCommand(catToUpdate, updateCatId));
+
+            if (cat == null)
+            {
+                return NotFound($"Cat with Id:{updateCatId} does not exist in database");
+            }
+
+            return Ok(cat);
+
+        }
+
+        [Authorize]
         [HttpDelete]
         [Route("deleteCat/{deleteCatId}")]
         public async Task<IActionResult> DeleteCat(Guid deleteCatId)
         {
-            var result = await _mediator.Send(new DeleteCatByIdCommand(deleteCatId));
-            if (result == null)
+            var guidValidator = _guidValidator.Validate(deleteCatId);
+
+            if (!guidValidator.IsValid)
             {
-                return NotFound("Katten finns inte med i listan");
+                return BadRequest(guidValidator.Errors.ConvertAll(errors => errors.ErrorMessage));
             }
-            return Ok(result);
+
+            await _mediator.Send(new DeleteCatByIdCommand(deleteCatId));
+
+            return NoContent();
+        }
+
+        [HttpGet]
+        [Route("getCatsByWeightOrBreed")]
+        public async Task<IActionResult> GetAllCatsByWeight(int? weight, string? breed)
+        {
+            return Ok(await _mediator.Send(new GetCatsByWeightOrBreedQuery { Weight = weight, Breed = breed }));
         }
     }
 }

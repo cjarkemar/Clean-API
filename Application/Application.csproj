@@ -9,6 +9,9 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.8.0" />
     <PackageReference Include="MediatR" Version="12.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.14" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.14" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,6 +31,24 @@
     <None Remove="Queries\Birds\" />
     <None Remove="Queries\Birds\GetAll\" />
     <None Remove="Queries\Birds\GetById\" />
+    <None Remove="Commands\Users\" />
+    <None Remove="Validators\" />
+    <None Remove="Validators\Dogs\" />
+    <None Remove="Validators\Users\" />
+    <None Remove="Validators\Cats\" />
+    <None Remove="Commands\Users\Register\" />
+    <None Remove="Commands\Users\DeleteUsers\" />
+    <None Remove="Commands\Users\UpdateUsers\" />
+    <None Remove="Queries\UsersGetToken\" />
+    <None Remove="Queries\Animals\" />
+    <None Remove="Queries\Animals\GetAll\" />
+    <None Remove="Queries\Animals\GetAllById\" />
+    <None Remove="Queries\Birds\GetColor\" />
+    <None Remove="Queries\Cats\GetWeightAndBreed\" />
+    <None Remove="Queries\Dogs\GetWeightAndBreed\" />
+    <None Remove="Commands\AnimalUser\" />
+    <None Remove="Commands\AnimalUser\AddAnimalToUser\" />
+    <None Remove="Commands\AnimalUser\DeleteAnimalToUser\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Commands\Dogs\DeleteDog\" />
@@ -41,5 +62,23 @@
     <Folder Include="Queries\Birds\" />
     <Folder Include="Queries\Birds\GetAll\" />
     <Folder Include="Queries\Birds\GetById\" />
+    <Folder Include="Commands\Users\" />
+    <Folder Include="Validators\" />
+    <Folder Include="Validators\Dogs\" />
+    <Folder Include="Validators\Users\" />
+    <Folder Include="Validators\Cats\" />
+    <Folder Include="Commands\Users\Register\" />
+    <Folder Include="Commands\Users\DeleteUsers\" />
+    <Folder Include="Commands\Users\UpdateUsers\" />
+    <Folder Include="Queries\UsersGetToken\" />
+    <Folder Include="Queries\Animals\" />
+    <Folder Include="Queries\Animals\GetAll\" />
+    <Folder Include="Queries\Animals\GetAllById\" />
+    <Folder Include="Queries\Birds\GetColor\" />
+    <Folder Include="Queries\Cats\GetWeightAndBreed\" />
+    <Folder Include="Queries\Dogs\GetWeightAndBreed\" />
+    <Folder Include="Commands\AnimalUser\" />
+    <Folder Include="Commands\AnimalUser\AddAnimalToUser\" />
+    <Folder Include="Commands\AnimalUser\DeleteAnimalToUser\" />
   </ItemGroup>
 </Project>

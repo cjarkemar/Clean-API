@@ -1,7 +1,12 @@
-﻿using Application.Queries.Birds.GetById;
+﻿using API.Controllers.BirdsController;
+using Application.Queries.Birds.GetById;
+using Application.Validators;
+using Application.Validators.Bird;
 using Domain.Models;
-using Domain.Models.Animal;
-using Infrastructure.Database;
+using Infrastructure.Repositories.Birds;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Threading;
@@ -12,48 +17,41 @@ namespace Test.BirdTests.QueryTest
     [TestFixture]
     public class GetBirdByIdTests
     {
-        private GetBirdByIdQueryHandler _handler;
-        private MockDatabase _mockDatabase;
+        private BirdsController _controller;
+        private IMediator _mediator;
+        private GuidValidator _guidValidator;
+        private BirdValidator _birdValidator;
 
         [SetUp]
         public void SetUp()
         {
-            // Initialize the handler and mock database before each test
-            _mockDatabase = new MockDatabase();
-            _handler = new GetBirdByIdQueryHandler(_mockDatabase);
+            _mediator = new Mock<IMediator>().Object;
+            _guidValidator = new GuidValidator();
+            _birdValidator = new BirdValidator();
+            _controller = new BirdsController(_mediator, _birdValidator, _guidValidator);
         }
 
-        [Test]
-        public async Task Handle_ValidId_ReturnsCorrectBird()
-        {
-            // Arrange
-            var birdId = new Guid("12345678-1234-5678-1234-567812345678");
-            var bird = new Bird { Id = birdId, };
-            _mockDatabase.Birds.Add(bird);
 
-            var query = new GetBirdByIdQuery(birdId);
-
-            // Act
-            var result = await _handler.Handle(query, CancellationToken.None);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.That(result.Id, Is.EqualTo(birdId));
-        }
 
         [Test]
-        public async Task Handle_InvalidId_ReturnsNull()
+        public async Task Handle_ValidId_ReturnCorrectBird()
         {
-            // Arrange
-            var invalidBirdId = Guid.NewGuid();
+            var guid = Guid.NewGuid();
+            var bird = new Bird { Name = "McNugget", Color = "Yellow" };
 
-            var query = new GetBirdByIdQuery(invalidBirdId);
+            var birdRepositoryMock = new Mock<IBirdRepository>();
+            birdRepositoryMock.Setup(x => x.GetBirdById(It.IsAny<Guid>())).ReturnsAsync(bird);
 
-            // Act
-            var result = await _handler.Handle(query, CancellationToken.None);
+            var handler = new GetBirdByIdQueryHandler(birdRepositoryMock.Object);
+            var command = new GetBirdByIdQuery(guid);
 
-            // Assert
-            Assert.IsNull(result);
+            //Act
+            var result = await handler.Handle(command, CancellationToken.None);
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.That(result, Is.TypeOf<Bird>());
+            Assert.That(result.Name.Equals("McNugget"));
         }
     }
 }

@@ -1,30 +1,33 @@
 ﻿using Domain.Models;
-using Infrastructure.Database;
+using Infrastructure.Repositories.Cats;
 using MediatR;
 
-namespace Application.Commands.Cats
+namespace Application.Commands.Cats.AddCat
 {
     public class AddCatCommandHandler : IRequestHandler<AddCatCommand, Cat>
     {
-        private readonly MockDatabase _mockDatabase;
+        private readonly ICatRepository _catRepository;
 
-        public AddCatCommandHandler(MockDatabase mockDatabase)
+        public AddCatCommandHandler(ICatRepository catRepository)
         {
-            _mockDatabase = mockDatabase;
+            _catRepository = catRepository;
         }
 
-        public Task<Cat> Handle(AddCatCommand request, CancellationToken cancellationToken)
+        public async Task<Cat> Handle(AddCatCommand request, CancellationToken cancellationToken)
         {
+
             Cat catToCreate = new()
             {
-                Id = Guid.NewGuid(),
+                AnimalId = Guid.NewGuid(),
                 Name = request.NewCat.Name,
-                LikesToPlay = request.NewCat.LikesToPlay
+                Breed = request.NewCat.Breed,
+                Weight = request.NewCat.Weight
             };
 
-            _mockDatabase.Cats.Add(catToCreate);
-            return Task.FromResult(catToCreate);
+            await _catRepository.AddCat(catToCreate, request.UserId);
+
+
+            return catToCreate;
         }
     }
 }
-

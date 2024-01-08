@@ -1,18 +1,21 @@
 ﻿using Application.Dtos;
-using Domain.Models.Animal;
+using Domain.Models;
 using MediatR;
 
-namespace Application.Commands.Birds
+
+namespace Application.Commands.Birds.UpdateBird
 {
     public class UpdateBirdByIdCommand : IRequest<Bird>
     {
-        public BirdDto UpdatedBird { get; }
+        public BirdDto BirdToUpdate { get; }
         public Guid Id { get; }
 
-        public UpdateBirdByIdCommand(BirdDto updatedBird, Guid birdId)
+        public UpdateBirdByIdCommand(BirdDto birdToUpdate, Guid id)
         {
-            UpdatedBird = updatedBird;
-            Id = birdId;
+            BirdToUpdate = birdToUpdate;
+            Id = id;
         }
+
+
     }
 }

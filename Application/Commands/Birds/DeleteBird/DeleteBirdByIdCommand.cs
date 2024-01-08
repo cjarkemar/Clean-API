@@ -1,8 +1,8 @@
-﻿using MediatR;
-using System;
+﻿using Domain.Models;
 using Domain.Models.Animal;
+using MediatR;
 
-namespace Application.Commands.Birds
+namespace Application.Commands.Birds.DeleteBird
 {
     public class DeleteBirdByIdCommand : IRequest<Bird>
     {
@@ -12,5 +12,7 @@ namespace Application.Commands.Birds
         {
             Id = birdId;
         }
+
+
     }
 }

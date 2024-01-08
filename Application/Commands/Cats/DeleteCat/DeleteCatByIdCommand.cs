@@ -1,17 +1,18 @@
-﻿using MediatR;
-using Domain.Models;
-using System;
+﻿using Domain.Models;
+using MediatR;
 
-namespace Application.Commands.Cats
+namespace Application.Commands.Cats.DeleteCat
 {
     public class DeleteCatByIdCommand : IRequest<Cat>
     {
+
         public Guid Id { get; }
 
-        public DeleteCatByIdCommand(Guid catId)
+
+        public DeleteCatByIdCommand(Guid id)
         {
-            Id = catId;
+            Id = id;
         }
+
     }
 }
-

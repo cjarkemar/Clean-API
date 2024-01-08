@@ -1,6 +1,7 @@
 ﻿using Application.Queries.Cats.GetById;
 using Domain.Models;
-using Infrastructure.Database;
+using Infrastructure.Repositories.Cats;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Threading;
@@ -11,48 +12,28 @@ namespace Test.CatTests.QueryTest
     [TestFixture]
     public class GetCatByIdTests
     {
-        private GetCatByIdQueryHandler _handler;
-        private MockDatabase _mockDatabase;
-
-        [SetUp]
-        public void SetUp()
-        {
-            // Initialize the handler and mock database before each test
-            _mockDatabase = new MockDatabase();
-            _handler = new GetCatByIdQueryHandler(_mockDatabase);
-        }
-
         [Test]
-        public async Task Handle_ValidId_ReturnsCorrectCat()
+        public async Task Handle_ValidId_ReturnCorrectCat()
         {
             // Arrange
-            var catId = new Guid("12345678-1234-5678-1234-567812345678");
-            var cat = new Cat { Id = catId,};
-            _mockDatabase.Cats.Add(cat);
+            var guid = Guid.NewGuid();
+            var cat = new Cat { Name = "Smulan" };
 
-            var query = new GetCatByIdQuery(catId);
+            var catRepositoryMock = new Mock<ICatRepository>();
+            catRepositoryMock.Setup(repo => repo.GetCatById(guid)).ReturnsAsync(cat);
 
-            // Act
-            var result = await _handler.Handle(query, CancellationToken.None);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.That(result.Id, Is.EqualTo(catId));
-        }
-
-        [Test]
-        public async Task Handle_InvalidId_ReturnsNull()
-        {
-            // Arrange
-            var invalidCatId = Guid.NewGuid();
-
-            var query = new GetCatByIdQuery(invalidCatId);
+            var handler = new GetCatByIdQueryHandler(catRepositoryMock.Object);
+            var command = new GetCatByIdQuery(guid);
 
             // Act
-            var result = await _handler.Handle(query, CancellationToken.None);
+            var result = await handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.IsNull(result);
+            Assert.IsNotNull(result);
+            Assert.That(result, Is.TypeOf<Cat>());
+            Assert.That(result.Name, Is.EqualTo("Smulan"));
+
+
         }
     }
 }

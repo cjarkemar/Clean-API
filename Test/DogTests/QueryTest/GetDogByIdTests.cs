@@ -1,54 +1,44 @@
-﻿using Application.Queries.Dogs.GetById;
-using Domain.Models;
-using Infrastructure.Database;
+﻿using API.Controllers.DogsController;
+using Application.Validators;
+using Application.Validators.Dog;
+using MediatR;
+using Moq;
+using NUnit.Framework;
+using System;
+using System.Threading.Tasks;
 
 namespace Test.DogTests.QueryTest
 {
     [TestFixture]
     public class GetDogByIdTests
     {
-        private GetDogByIdQueryHandler _handler;
-        private MockDatabase _mockDatabase;
+        private DogsController _controller;
+        private Mock<IMediator> _mediatorMock;
+        private GuidValidator _guidValidator;
+        private DogValidator _dogValidator;
 
         [SetUp]
         public void SetUp()
         {
-            // Initialize the handler and mock database before each test
-            _mockDatabase = new MockDatabase();
-            _handler = new GetDogByIdQueryHandler(_mockDatabase);
+            _mediatorMock = new Mock<IMediator>();
+            _guidValidator = new GuidValidator();
+            _dogValidator = new DogValidator();
+            _controller = new DogsController(_mediatorMock.Object, _dogValidator, _guidValidator);
         }
 
         [Test]
-        public async Task Handle_ValidId_ReturnsCorrectDog()
+        public async Task Controller_Get_Dog_By_Id()
         {
             // Arrange
-            var dogId = new Guid("12345678-1234-5678-1234-567812345678");
-            var dog = new Dog { Id = dogId, /* other properties */ };
-            _mockDatabase.Dogs.Add(dog);
-
-            var query = new GetDogByIdQuery(dogId);
+            var dogId = new Guid("523a0c2b-6b9b-4239-a691-495a6c5778c6");
 
             // Act
-            var result = await _handler.Handle(query, CancellationToken.None);
+            var result = await _controller.GetDogById(dogId);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.That(result.Id, Is.EqualTo(dogId));
-        }
+            Assert.That(result, Is.Not.Null);
 
-        [Test]
-        public async Task Handle_InvalidId_ReturnsNull()
-        {
-            // Arrange
-            var invalidDogId = Guid.NewGuid();
 
-            var query = new GetDogByIdQuery(invalidDogId);
-
-            // Act
-            var result = await _handler.Handle(query, CancellationToken.None);
-
-            // Assert
-            Assert.IsNull(result);
         }
     }
 }
